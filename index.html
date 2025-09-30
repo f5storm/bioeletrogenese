@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bioeletrogênese: A Linguagem Elétrica das Células</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* == Theme Colors for Bioelectrogenesis == */
+            --repouso-color: #3b82f6;      /* Blue for Resting State */
+            --graduado-color: #eab308;     /* Yellow for Graded Potentials */
+            --acao-color: #ec4899;         /* Pink/Magenta for Action Potential */
+
+            /* Glow/Highlight Colors for light theme */
+            --repouso-glow: rgba(59, 130, 246, 0.2);
+            --graduado-glow: rgba(234, 179, 8, 0.2);
+            --acao-glow: rgba(236, 72, 153, 0.2);
+            
+            /* Theme Border Colors for light theme */
+            --repouso-border: rgba(59, 130, 246, 0.4);
+            --graduado-border: rgba(234, 179, 8, 0.4);
+            --acao-border: rgba(236, 72, 153, 0.4);
+
+            /* Light Theme Palette */
+            --bg-main: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+        }
+
+        html { scroll-behavior: smooth; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            color: var(--text-primary);
+            overflow-x: hidden;
+            background-color: var(--bg-main);
+            transition: background-color 0.5s ease-in-out; /* For quiz feedback */
+        }
+        
+        /* == Background color flash for Quiz == */
+        body.correct-bg { background-color: #dcfce7; }
+        body.incorrect-bg { background-color: #fee2e2; }
+
+        /* Animated background shapes */
+        .background-container {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: -2;
+        }
+        .light-bubble {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(140px);
+            opacity: 0.15; 
+            animation: moveBubble 35s infinite alternate;
+        }
+        .light-bubble.b1 { width: 45vw; height: 45vw; top: 5%; left: -10%; background: var(--repouso-color); animation-duration: 40s; }
+        .light-bubble.b2 { width: 45vw; height: 45vw; top: 40%; left: 70%; background: var(--acao-color); animation-duration: 35s; }
+        .light-bubble.b3 { width: 50vw; height: 50vw; top: 60%; left: 10%; background: var(--graduado-color); animation-duration: 45s; }
+
+        @keyframes moveBubble {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(15vw, -20vh) scale(1.2); }
+        }
+        
+        /* Dynamic background glows for transitions */
+        .dynamic-bg-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 150vmax;
+            height: 150vmax;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0;
+            transition: opacity 1.5s ease-in-out;
+            z-index: -1;
+        }
+        #bg-potencial-repouso { background-color: var(--repouso-color); }
+        #bg-potenciais-graduados { background-color: var(--graduado-color); }
+        #bg-potencial-acao { background-color: var(--acao-color); }
+
+        .section-container {
+            width: 100%;
+            padding: 7rem 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+        
+        #hero { 
+            min-height: 90vh; 
+            padding-top: 2rem; 
+            padding-bottom: 2rem;
+        }
+        #hero h1 { 
+            font-size: clamp(2.8rem, 7vw, 5rem); 
+            font-weight: 800; 
+            letter-spacing: -0.05em; 
+            text-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+        #hero p { 
+            font-size: clamp(1.1rem, 2.5vw, 1.35rem); 
+            max-width: 650px; 
+            color: var(--text-secondary);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .section-header-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            overflow: hidden;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        .section-header-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section-header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+            z-index: 1;
+        }
+        .section-header-card > * {
+             position: relative;
+             z-index: 2;
+        }
+        .section-header-card .section-title {
+            margin-bottom: 1rem;
+        }
+        #hero .section-header-card { margin-bottom: 0; } 
+
+        .section-title { font-size: clamp(2.2rem, 5.5vw, 4rem); font-weight: 800; letter-spacing: -0.04em; color: var(--text-primary); position: relative; }
+        .section-subtitle { 
+            font-size: clamp(1rem, 2vw, 1.2rem); 
+            max-width: 700px; 
+            color: var(--text-secondary); 
+            margin-bottom: 0;
+            margin-left: auto; 
+            margin-right: auto; 
+        }
+
+        .topics-grid {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .topic-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 1.5rem;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .topic-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .topic-card:nth-child(1) { transition-delay: 0.05s; }
+        .topic-card:nth-child(2) { transition-delay: 0.1s; }
+        .topic-card:nth-child(3) { transition-delay: 0.15s; }
+        .topic-card:nth-child(4) { transition-delay: 0.2s; }
+        .topic-card:nth-child(5) { transition-delay: 0.25s; }
+
+
+        .topic-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+            transition: box-shadow 0.4s ease;
+            z-index: 1;
+        }
+        
+        .topic-card:hover::before { 
+            box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8);
+        }
+        
+        .topic-card > div {
+            position: relative;
+            z-index: 2;
+        }
+
+        .topic-card:hover { 
+            transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.3); 
+        }
+        
+        .topic-card .summary { 
+            color: var(--text-primary);
+            text-shadow: none;
+            font-size: 1.125rem; 
+            font-weight: 600; 
+            padding: 1.5rem; 
+            cursor: pointer; 
+            outline: none; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        .topic-card .summary::after { 
+            content: '+'; 
+            font-size: 1.5rem; 
+            font-weight: 400; 
+            color: var(--text-secondary);
+            text-shadow: none;
+            transition: transform 0.3s ease-in-out; 
+        }
+        .topic-card.is-open > .summary::after { transform: rotate(45deg); }
+        .topic-card.is-open > .summary { 
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+        }
+        
+        .topic-content-wrapper {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        .topic-content { 
+            padding: 1.5rem; 
+            font-size: 0.95rem; 
+            color: var(--text-secondary);
+            text-shadow: none;
+        }
+
+        .image-bubble {
+            position: relative;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 1.25rem;
+            padding: 0.75rem;
+            margin-top: 1rem;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .image-bubble:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+        }
+        .image-bubble svg {
+            width: 100%;
+            height: auto;
+            border-radius: 0.75rem;
+            display: block;
+        }
+        
+        #potencial-repouso .topic-card.is-open {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), inset 0 0 0 2px var(--repouso-border);
+        }
+        #potenciais-graduados .topic-card.is-open {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), inset 0 0 0 2px var(--graduado-border);
+        }
+        #potencial-acao .topic-card.is-open {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08), inset 0 0 0 2px var(--acao-border);
+        }
+        
+        #potencial-repouso .topic-card.is-open:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(59, 130, 246, 0.6);
+        }
+        #potenciais-graduados .topic-card.is-open:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(234, 179, 8, 0.6);
+        }
+        #potencial-acao .topic-card.is-open:hover {
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1), inset 0 0 0 2px rgba(236, 72, 153, 0.6);
+        }
+        
+        .term { 
+            text-decoration: none; 
+            cursor: pointer; 
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 0.6rem;
+            transition: all 0.2s ease-in-out;
+            text-shadow: none;
+        }
+        #potencial-repouso .term { background-color: var(--repouso-glow); color: #1d4ed8; }
+        #potenciais-graduados .term { background-color: var(--graduado-glow); color: #a16207; }
+        #potencial-acao .term { background-color: var(--acao-glow); color: #9d174d; }
+        .term:hover { 
+            filter: brightness(1.15); 
+        }
+
+        /* Modal Styling */
+        #modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(248, 250, 252, 0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+            z-index: 1000;
+        }
+        #modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.4s ease;
+        }
+        
+        #modal-content {
+            background: rgba(255, 255, 255, 0.55); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: var(--text-primary);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+            border-radius: 2rem;
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            transform: scale(0.95);
+            transition: transform 0.4s ease;
+            overflow: hidden; 
+        }
+        
+        #modal-content.image-modal {
+             max-width: 650px;
+        }
+        
+        #modal-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.6);
+            z-index: 1;
+        }
+
+        #modal-overlay.visible #modal-content { 
+            transform: scale(1);
+        }
+        
+        #modal-content.theme-potencial-repouso { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), inset 0 0 0 2px var(--repouso-border); }
+        #modal-content.theme-potenciais-graduados { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), inset 0 0 0 2px var(--graduado-border); }
+        #modal-content.theme-potencial-acao { box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15), inset 0 0 0 2px var(--acao-border); }
+        
+        #modal-header, #modal-description {
+            position: relative;
+            z-index: 2;
+        }
+
+        #modal-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: transparent;
+            text-align: center;
+            padding: 1.5rem 3.5rem;
+        }
+        
+        #modal-title { 
+            font-size: 1.75rem; 
+            font-weight: 700; 
+            text-shadow: none;
+        }
+        #modal-header.theme-potencial-repouso #modal-title { color: var(--repouso-color); }
+        #modal-header.theme-potenciais-graduados #modal-title { color: var(--graduado-color); }
+        #modal-header.theme-potencial-acao #modal-title { color: var(--acao-color); }
+        
+        #modal-description { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; padding: 1.5rem 2rem 2rem 2rem; }
+        
+        #modal-image-container {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        #modal-image-container svg {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 1rem;
+        }
+
+        #modal-close-btn {
+            position: absolute;
+            top: 1rem; right: 1rem;
+            background: rgba(0,0,0,0.05);
+            border: none;
+            border-radius: 50%;
+            width: 2.5rem; height: 2.5rem;
+            cursor: pointer; 
+            transition: background-color 0.2s ease, transform 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            z-index: 3;
+        }
+        #modal-close-btn:hover { background: rgba(0,0,0,0.1); transform: scale(1.1); }
+        
+        .footer-signature { text-align: center; padding: 4rem 1rem; background-color: transparent; color: #94a3b8; }
+        ul { list-style-position: inside; padding-left: 0.5rem;}
+        li { margin-bottom: 0.5rem; }
+
+        /* == Quiz Styles == */
+        #quiz-section {
+             background: rgba(255, 255, 255, 0.2);
+             backdrop-filter: blur(15px);
+             -webkit-backdrop-filter: blur(15px);
+             border-top: 1px solid rgba(255, 255, 255, 0.3);
+             padding-bottom: 4rem;
+        }
+
+        .quiz-container {
+            max-width: 800px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        
+        #quiz-timer {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        #modal-description { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; padding: 0 2rem 2rem 2rem; }
+        
+        #quiz-question {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+        }
+
+        #quiz-options {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .quiz-option {
+            background-color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+            will-change: transform, box-shadow;
+        }
+
+        .quiz-option:hover {
+            transform: translateY(-3px);
+            background-color: white;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .quiz-option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        .quiz-option.correct-answer {
+            border-color: #22c55e;
+            background-color: #f0fdf4;
+            color: #15803d;
+            font-weight: 600;
+        }
+        
+        .quiz-option.incorrect-answer {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+            color: #b91c1c;
+            font-weight: 600;
+        }
+
+        #quiz-start-btn, #restart-quiz-btn {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            font-weight: 700;
+            padding: 1rem 2.5rem;
+            border-radius: 1rem;
+            font-size: 1.2rem;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        #quiz-start-btn {
+            color: var(--text-primary);
+        }
+        #restart-quiz-btn {
+            color: var(--acao-color);
+             margin-top: 2rem;
+        }
+
+        #quiz-start-btn:hover, #restart-quiz-btn:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+        
+        #quiz-results {
+             text-align: center;
+        }
+        
+        #quiz-results h3 {
+             font-size: 2rem;
+             font-weight: 700;
+             margin-bottom: 1.5rem;
+        }
+
+        #quiz-percentage {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 2rem;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .results-stats {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .stat-correct, .stat-incorrect {
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: 9999px;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .stat-correct {
+            background-color: rgba(34, 197, 94, 0.25); 
+        }
+
+        .stat-incorrect {
+            background-color: rgba(239, 68, 68, 0.25);
+        }
+        
+        #missed-topics-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.75rem;
+            list-style: none;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        .missed-topic-bubble {
+            background-color: #f1f5f9;
+            color: var(--text-secondary);
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .missed-topic-bubble:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .missed-topic-bubble.visited-topic {
+            border-color: #22c55e;
+            background-color: #f0fdf4;
+            color: #166534;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="light-bubble b1"></div>
+        <div class="light-bubble b2"></div>
+        <div class="light-bubble b3"></div>
+        <div class="dynamic-bg-glow" id="bg-potencial-repouso"></div>
+        <div class="dynamic-bg-glow" id="bg-potenciais-graduados"></div>
+        <div class="dynamic-bg-glow" id="bg-potencial-acao"></div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero" class="section-container">
+        <div class="section-header-card">
+            <h1>Bioeletrogênese</h1>
+            <p class="mt-4">Uma jornada interativa pela linguagem elétrica das células, explorando como neurônios geram e propagam sinais para controlar o corpo.</p>
+        </div>
+    </section>
+    
+    <!-- Resting Potential Section -->
+    <section id="potencial-repouso" class="section-container">
+        <div class="section-header-card">
+            <h2 class="section-title">O Potencial de Repouso</h2>
+            <p class="section-subtitle">Antes de qualquer sinal, a célula nervosa mantém uma voltagem estável através de sua membrana. Este é o ponto de partida para toda a comunicação neural.</p>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card" id="topic-diferenca-potencial">
+                <div class="summary">A Diferença de Potencial</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>Células excitáveis, como neurônios, mantêm uma diferença de carga elétrica entre o interior e o exterior da membrana.</li>
+                            <li>O interior da célula é negativamente carregado em relação ao exterior.</li>
+                            <li>Esse estado é chamado de <span class="term" data-description="A voltagem estável através da membrana de uma célula que não está sendo estimulada. Em um neurônio típico, este valor é de aproximadamente -70 milivolts (mV).">Potencial de Membrana em Repouso</span>.</li>
+                             <li>Essa voltagem é crucial, agindo como uma bateria pronta para ser usada para gerar um sinal elétrico.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-composicao-ionica">
+                <div class="summary">Concentrações Iônicas</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>O potencial de repouso é estabelecido por distribuições desiguais de íons.</li>
+                            <li>No <span class="term" data-description="Líquido Extracelular: Rico em íons Sódio (Na⁺) e Cloreto (Cl⁻).">LEC</span>, há uma alta concentração de Na⁺.</li>
+                            <li>No <span class="term" data-description="Líquido Intracelular: Rico em íons Potássio (K⁺) e ânions orgânicos (proteínas com carga negativa).">LIC</span>, há uma alta concentração de K⁺.</li>
+                            <li>Esses gradientes são a fonte de energia potencial para os sinais elétricos.</li>
+                        </ul>
+                        <div class="image-bubble" id="svg-concentracao-ions" data-img-svg="true" data-img-alt="Tabela de Concentração Iônica" data-img-description="Esta tabela mostra as concentrações aproximadas (em mM) dos íons Sódio (Na+), Cloreto (Cl-) e Potássio (K+) dentro (LIC) e fora (LEC) da célula. Note a alta concentração de Na+ fora e de K+ dentro, uma diferença fundamental para a bioeletrogênese.">
+                            <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" class="text-sm font-sans">
+                                <title>Tabela de Concentração Iônica</title>
+                                <!-- Background and Structure -->
+                                <rect x="0" y="0" width="300" height="150" fill="#f8fafc" />
+                                <rect x="10" y="10" width="280" height="40" fill="#a5b4fc" rx="5"/>
+                                <rect x="10" y="50" width="280" height="90" fill="white" rx="5"/>
+                                <line x1="105" y1="10" x2="105" y2="140" stroke="#d1d5db" stroke-width="1.5" />
+                                <line x1="200" y1="10" x2="200" y2="140" stroke="#d1d5db" stroke-width="1.5" />
+                                <line x1="10" y1="90" x2="290" y2="90" stroke="#e5e7eb" stroke-width="1" />
+                                <line x1="10" y1="120" x2="290" y2="120" stroke="#e5e7eb" stroke-width="1" />
+                                <!-- Header Text -->
+                                <text x="57.5" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">Íon</text>
+                                <text x="152.5" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">LEC</text>
+                                <text x="245" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">LIC</text>
+                                <!-- Body Text -->
+                                <g fill="#1e293b" font-size="16px" text-anchor="middle">
+                                    <text x="57.5" y="75">Na+</text>
+                                    <text x="152.5" y="75" font-weight="500">145</text>
+                                    <text x="245" y="75" font-weight="500">15</text>
+                                    <text x="57.5" y="105">Cl-</text>
+                                    <text x="152.5" y="105" font-weight="500">100</text>
+                                    <text x="245" y="105" font-weight="500">7</text>
+                                    <text x="57.5" y="135">K+</text>
+                                    <text x="152.5" y="135" font-weight="500">5</text>
+                                    <text x="245" y="135" font-weight="500">150</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-permeabilidade-canais">
+                <div class="summary">Permeabilidade e Canais de Vazamento</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>A membrana em repouso é muito mais permeável ao K⁺ do que ao Na⁺.</li>
+                            <li>Isso ocorre devido à presença de <span class="term" data-description="Canais iônicos que estão sempre abertos, permitindo que o potássio (K+) saia da célula a favor de seu gradiente de concentração.">canais de vazamento de potássio</span>.</li>
+                            <li>À medida que o K⁺ (positivo) sai, o interior da célula torna-se cada vez mais negativo.</li>
+                            <li>A saída de K⁺ para até que a força elétrica (que puxa o K⁺ para dentro) equilibre a força química (que o empurra para fora). Este ponto de equilíbrio para o K⁺ é de cerca de -90 mV.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+             <div class="topic-card" id="topic-bomba-sodio-potassio">
+                <div class="summary">Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>Para manter os gradientes de concentração, a célula precisa de um mecanismo ativo.</li>
+                            <li>A <span class="term" data-description="Uma proteína transportadora que usa energia (ATP) para bombear ativamente 3 íons de sódio (Na+) para fora da célula e 2 íons de potássio (K+) para dentro.">bomba de Na⁺/K⁺</span> trabalha constantemente contra o vazamento de íons.</li>
+                            <li>Ela garante que a concentração de Na⁺ permaneça alta fora da célula e a de K⁺ permaneça alta dentro.</li>
+                            <li>Por bombear mais cargas positivas para fora do que para dentro (3 Na⁺ vs 2 K⁺), ela é <span class="term" data-description="Significa que a bomba contribui diretamente para a negatividade do interior da célula, embora sua principal função seja manter os gradientes de concentração.">eletrogênica</span> e ajuda a manter o potencial de repouso.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Graded Potentials Section -->
+    <section id="potenciais-graduados" class="section-container">
+         <div class="section-header-card">
+            <h2 class="section-title">Potenciais Graduados</h2>
+            <p class="section-subtitle">Pequenos sinais locais que agem como gatilhos. Eles podem somar-se para iniciar um sinal de longa distância ou podem simplesmente desaparecer.</p>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card" id="topic-sinais-locais">
+                <div class="summary">O que são Potenciais Graduados?</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                           <li>São pequenas e breves alterações no potencial de membrana, confinadas a uma pequena região.</li>
+                           <li>São gerados pela abertura de canais iônicos dependentes de ligantes (em sinapses) ou por estímulos sensoriais (em receptores).</li>
+                           <li>Podem ser uma <span class="term" data-description="O potencial de membrana se torna menos negativo (mais próximo de zero). Geralmente é excitatório, aumentando a chance de um neurônio disparar.">despolarização</span> (entrada de Na⁺) ou uma <span class="term" data-description="O potencial de membrana se torna mais negativo (mais longe de zero). Geralmente é inibitório, diminuindo a chance de um neurônio disparar.">hiperpolarização</span> (saída de K⁺ ou entrada de Cl⁻).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-magnitude-decremento">
+                <div class="summary">Magnitude Variável e Decremento</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>A "amplitude" (tamanho) de um potencial graduado é proporcional à força do estímulo. Um estímulo mais forte abre mais canais, causando uma alteração maior na voltagem.</li>
+                            <li>Eles se propagam com <span class="term" data-description="A corrente elétrica se dissipa à medida que se afasta do ponto de origem, fazendo com que a alteração de voltagem diminua com a distância.">decremento</span>, ou seja, perdem força à medida que se afastam do ponto de origem.</li>
+                            <li>Por isso, são eficazes apenas para comunicação a curta distância.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-somacao-limiar">
+                <div class="summary">Somação e o Limiar de Disparo</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>A principal função dos potenciais graduados é levar a membrana do neurônio ao <span class="term" data-description="A voltagem específica (geralmente em torno de -55 mV) que deve ser alcançada para que um potencial de ação seja disparado.">limiar de disparo</span>.</li>
+                            <li>Se um único potencial graduado não for forte o suficiente, múltiplos potenciais podem se somar (<span class="term" data-description="Processo pelo qual múltiplos potenciais graduados se combinam. Se a soma das despolarizações atingir o limiar, um potencial de ação é gerado.">somação</span>).</li>
+                            <li>Este gráfico ilustra como diferentes estímulos afetam o potencial de membrana. Estímulos fracos (a, b, c) causam respostas locais que não atingem o limiar. Um estímulo forte o suficiente (d) atinge o limiar e dispara o potencial de ação.</li>
+                        </ul>
+                         <div class="image-bubble" id="svg-respostas-locais" data-img-svg="true" data-img-alt="Gráfico de Respostas Locais e Potencial de Ação" data-img-description="Este gráfico compara respostas sublimiares (que não atingem o limiar) com uma resposta que dispara um potencial de ação. A curva 'a' mostra uma hiperpolarização. As curvas 'b' e 'c' mostram despolarizações graduadas de força crescente. A curva 'd' atinge o 'Limiar' e desencadeia o potencial de ação 'tudo ou nada'.">
+                            <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg" class="text-sm font-sans" fill="#475569">
+                                <title>Gráfico de Respostas Locais e Potencial de Ação</title>
+                                <!-- Background -->
+                                <rect width="400" height="350" fill="#eef2ff"/>
+
+                                <!-- Axes and grid lines -->
+                                <line x1="50" y1="300" x2="380" y2="300" stroke="#6b7280" stroke-width="2"/> <!-- Eixo X -->
+                                <line x1="50" y1="20" x2="50" y2="300" stroke="#6b7280" stroke-width="2"/> <!-- Eixo Y -->
+                                
+                                <!-- Y-Axis Labels -->
+                                <g font-size="14" text-anchor="end" font-weight="500">
+                                    <text x="45" y="263">PRM</text>
+                                    <text x="45" y="278" font-size="12">-70</text>
+                                    <line x1="50" y1="270" x2="60" y2="270" stroke="#6b7280" stroke-width="1.5"/>
+                                    
+                                    <text x="45" y="193">-30</text>
+                                    <line x1="50" y1="190" x2="380" y2="190" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3"/>
+                                    
+                                    <text x="45" y="88">0</text>
+                                    <line x1="50" y1="85" x2="380" y2="85" stroke="#d1d5db" stroke-width="1" stroke-dasharray="3"/>
+                                </g>
+
+                                <text x="15" y="160" text-anchor="middle" writing-mode="vertical-rl" transform="rotate(180 15 160)" font-weight="600">$V_m$ (mV)</text>
+                                <text x="215" y="325" text-anchor="middle" font-weight="600">t (ms)</text>
+                        
+                                <!-- Threshold Line -->
+                                <line x1="50" y1="230" x2="190" y2="230" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="5 3"/>
+                                <g>
+                                    <rect x="195" y="220" width="55" height="22" rx="5" fill="rgba(255,255,255,0.7)"></rect>
+                                    <text x="222" y="235" text-anchor="middle" font-weight="500">Limiar</text>
+                                </g>
+                        
+                                <!-- Curves -->
+                                <!-- Curve a (hyperpolarization) -->
+                                <path d="M 70 270 C 90 290, 150 290, 170 270" stroke="#a855f7" stroke-width="2.5" fill="none"/>
+                                <text x="120" y="292" fill="#a855f7" font-weight="bold">a</text>
+                        
+                                <!-- Curve b (small depolarization) -->
+                                <path d="M 70 270 C 100 250, 160 250, 190 270" stroke="#16a34a" stroke-width="2.5" fill="none"/>
+                                <text x="130" y="248" fill="#16a34a" font-weight="bold">b</text>
+                        
+                                <!-- Curve c (larger depolarization) -->
+                                <path d="M 70 270 C 110 230, 170 230, 205 270" stroke="#0ea5e9" stroke-width="2.5" fill="none"/>
+                                <text x="175" y="225" fill="#0ea5e9" font-weight="bold">c</text>
+                        
+                                <!-- Curve d (action potential) -->
+                                <path d="M 70 270 C 120 230, 150 230, 170 230" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+                                <path d="M 170 230 L 180 190 L 190 85 L 195 40" stroke="#dc2626" stroke-width="2.5" fill="none"/>
+                                <text x="160" y="210" fill="#dc2626" font-weight="bold">d</text>
+                        
+                                <!-- Labels with translucent background -->
+                                <g>
+                                    <rect x="270" y="265" width="115" height="45" rx="8" fill="rgba(255,255,255,0.7)"></rect>
+                                    <text x="327" y="282" text-anchor="middle" font-weight="500">Respostas</text>
+                                    <text x="327" y="297" text-anchor="middle" font-size="12px" font-weight="500">locais (sublimiar)</text>
+                                </g>
+                                
+                                <g>
+                                     <rect x="220" y="55" width="110" height="42" rx="8" fill="rgba(255,255,255,0.7)"></rect>
+                                    <text x="275" y="72" text-anchor="middle" font-weight="600" fill="#dc2626">Potencial</text>
+                                    <text x="275" y="87" text-anchor="middle" font-weight="600" fill="#dc2626">de ação</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-peps-pips">
+                <div class="summary">PEPS vs. PIPS</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>Dependendo do neurotransmissor e do receptor, os potenciais graduados em uma sinapse podem ser excitatórios ou inibitórios.</li>
+                            <li><span class="term" data-description="Potencial Excitatório Pós-Sináptico: Uma despolarização local que aproxima o potencial de membrana do limiar. É causado pela abertura de canais de Na⁺ ou Ca²⁺.">PEPS (EPSP)</span>: Aumenta a chance de disparo.</li>
+                            <li><span class="term" data-description="Potencial Inibitório Pós-Sináptico: Uma hiperpolarização local que afasta o potencial de membrana do limiar. É causado pela abertura de canais de K⁺ ou Cl⁻.">PIPS (IPSP)</span>: Diminui a chance de disparo.</li>
+                            <li>Um neurônio recebe milhares de sinais PEPS e PIPS constantemente. A decisão de disparar um potencial de ação depende da soma total desses sinais na zona de gatilho.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Action Potential Section -->
+    <section id="potencial-acao" class="section-container">
+        <div class="section-header-card">
+            <h2 class="section-title">O Potencial de Ação</h2>
+            <p class="section-subtitle">O sinal "tudo ou nada" que viaja longas distâncias sem perder força. É a base da comunicação rápida e eficiente no sistema nervoso.</p>
+        </div>
+        <div class="topics-grid">
+            <div class="topic-card" id="topic-fases-potencial-acao">
+                <div class="summary">Fases do Potencial de Ação</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        O potencial de ação é uma sequência rápida de eventos elétricos. Clique em cada fase para ver os detalhes:
+                        <ul>
+                            <li><span class="term" data-description="A célula está em -70 mV, com os canais dependentes de voltagem fechados, pronta para disparar.">1. Potencial de Repouso</span></li>
+                            <li><span class="term" data-description="Um estímulo despolarizante inicial faz com que o potencial de membrana atinja o valor limiar de -55 mV, o ponto sem retorno para o disparo do potencial de ação.">2. Estímulo e Limiar</span></li>
+                            <li><span class="term" data-description="Ao atingir o limiar, os canais de Na⁺ dependentes de voltagem se abrem rapidamente. A entrada massiva de íons Na⁺ inverte a polaridade da membrana, que sobe até um pico de aproximadamente +30 mV.">3. Despolarização</span></li>
+                            <li><span class="term" data-description="No pico de +30 mV, os portões de inativação dos canais de Na⁺ se fecham, e os canais de K⁺ dependentes de voltagem (que são mais lentos) terminam de se abrir.">4. Pico e Início da Repolarização</span></li>
+                            <li><span class="term" data-description="Com os canais de K⁺ abertos, o potássio (K⁺) sai da célula a favor de seu gradiente, tornando o interior da membrana negativo novamente. Este processo 'derruba' a voltagem.">5. Repolarização</span></li>
+                            <li><span class="term" data-description="Os canais de K⁺ demoram um pouco a mais para fechar, o que causa uma breve 'queda' na voltagem para um valor mais negativo que o de repouso.">6. Hiperpolarização</span></li>
+                            <li><span class="term" data-description="Os canais de K⁺ finalmente se fecham e a bomba de Na⁺/K⁺ ATPase trabalha para restaurar as concentrações iônicas originais, estabilizando a membrana de volta em -70 mV.">7. Retorno ao Repouso</span></li>
+                        </ul>
+                         <div class="image-bubble" id="svg-potencial-acao" data-img-svg="true" data-img-alt="Gráfico das Fases do Potencial de Ação" data-img-description="Este gráfico detalha as fases de um potencial de ação. Começa no estado de repouso (1), atinge o limiar (2), despolariza rapidamente até um pico (3, 4), repolariza (5), passa por uma hiperpolarização (6) e finalmente retorna ao repouso (7). A entrada de Na+ causa a despolarização e a saída de K+ causa a repolarização.">
+                            <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" class="font-sans">
+                                <title>Gráfico Fiel do Potencial de Ação</title>
+                                <!-- Defs for arrowheads -->
+                                <defs>
+                                    <marker id="arrow-head-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                        <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6"/>
+                                    </marker>
+                                </defs>
+                                
+                                <!-- Axes -->
+                                <line x1="80" y1="350" x2="480" y2="350" stroke="#8b5cf6" stroke-width="3" marker-end="url(#arrow-head-purple)"/>
+                                <line x1="80" y1="350" x2="80" y2="20" stroke="#8b5cf6" stroke-width="3" marker-end="url(#arrow-head-purple)"/>
+                                
+                                <!-- Y-Axis Labels -->
+                                <g text-anchor="end" font-size="14px" font-weight="500" fill="#374151">
+                                    <text x="75" y="68">+40</text>
+                                    <text x="75" y="178">0</text>
+                                    <text x="75" y="278">-55</text>
+                                    <text x="75" y="318">-70</text>
+                                </g>
+                                <text x="40" y="200" text-anchor="middle" writing-mode="vertical-rl" transform="rotate(180 40 200)" font-weight="600" fill="#374151">Voltagem (mv)</text>
+                                
+                                <!-- X-Axis Label -->
+                                 <text x="280" y="380" text-anchor="middle" font-weight="600" fill="#374151">Tempo (ms)</text>
+                                
+                                <!-- Reference Lines -->
+                                <line x1="80" y1="315" x2="450" y2="315" stroke="#facc15" stroke-width="2" stroke-dasharray="5 5"/>
+                                <line x1="120" y1="275" x2="210" y2="275" stroke="#4b5563" stroke-width="1.5"/>
+                                
+                                <!-- Curves -->
+                                <!-- Failed Initiations -->
+                                <path d="M 160 315 C 165 300, 175 300, 180 315" stroke="#facc15" stroke-width="3" fill="none"/>
+                                <path d="M 180 315 C 185 290, 205 290, 210 315" stroke="#facc15" stroke-width="3" fill="none"/>
+                                
+                                <!-- Main Action Potential Curve -->
+                                <path d="M 145 315 C 200 315, 210 275, 230 150 C 240 80, 250 50, 260 60 C 275 80, 290 250, 300 315 C 310 345, 320 355, 330 340 C 340 325, 350 315, 380 315" stroke="#facc15" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                                
+                                <!-- Labels with translucent backgrounds -->
+                                <g text-anchor="middle" font-weight="600">
+                                    <!-- Potencial de ação -->
+                                    <rect x="200" y="20" width="160" height="28" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <text x="280" y="40" font-size="18px" fill="#1e293b">Potencial de ação</text>
+                                    
+                                    <!-- Entrada de Na+ -->
+                                    <rect x="115" y="75" width="110" height="25" rx="8" fill="rgba(240, 253, 244, 0.8)"/>
+                                    <text x="170" y="92" fill="#15803d">Entrada de Na+</text>
+                                    
+                                    <!-- Saída de K+ -->
+                                    <rect x="330" y="165" width="95" height="25" rx="8" fill="rgba(240, 253, 244, 0.8)"/>
+                                    <text x="377" y="182" fill="#15803d">Saída de K+</text>
+                                    
+                                    <!-- Limite -->
+                                    <rect x="155" y="250" width="55" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <text x="182" y="265" font-weight="500" fill="#374151">Limite</text>
+                                    
+                                    <!-- Estado de repouso -->
+                                    <rect x="340" y="290" width="130" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <text x="405" y="305" font-weight="500" fill="#374151">Estado de repouso</text>
+                                    
+                                    <!-- Iniciações falhas -->
+                                     <rect x="200" y="285" width="120" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <text x="260" y="300" font-weight="500" fill="#374151">Iniciações falhas</text>
+                                    
+                                    <!-- Estímulo -->
+                                    <rect x="95" y="320" width="70" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <text x="130" y="335" font-weight="500" fill="#374151">Estímulo ↑</text>
+                                </g>
+                                
+                                <!-- Rotated Labels -->
+                                <text x="180" y="200" text-anchor="middle" font-weight="600" fill="#374151">Despolarização</text>
+                                <text x="340" y="200" text-anchor="middle" font-weight="600" fill="#374151">Repolarização</text>
+                                
+                                <!-- Phase Markers -->
+                                <g font-family="sans-serif" font-size="12px" font-weight="bold" fill="white" text-anchor="middle">
+                                    <!-- Marker 1 -->
+                                    <circle cx="130" cy="315" r="10" fill="#a855f7"/>
+                                    <text x="130" y="319">1</text>
+                                    <!-- Marker 2 -->
+                                    <circle cx="215" cy="275" r="10" fill="#a855f7"/>
+                                    <text x="215" y="279">2</text>
+                                    <!-- Marker 3 -->
+                                    <circle cx="238" cy="140" r="10" fill="#a855f7"/>
+                                    <text x="238" y="144">3</text>
+                                    <!-- Marker 4 -->
+                                    <circle cx="258" cy="60" r="10" fill="#a855f7"/>
+                                    <text x="258" y="64">4</text>
+                                    <!-- Marker 5 -->
+                                    <circle cx="280" cy="150" r="10" fill="#a855f7"/>
+                                    <text x="280" y="154">5</text>
+                                    <!-- Marker 6 -->
+                                    <circle cx="325" cy="345" r="10" fill="#a855f7"/>
+                                    <text x="325" y="349">6</text>
+                                     <!-- Marker 7 -->
+                                    <circle cx="420" cy="315" r="10" fill="#a855f7"/>
+                                    <text x="420" y="319">7</text>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-canais-voltagem">
+                <div class="summary">Canais Dependentes de Voltagem</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>O potencial de ação é possível graças a dois tipos de canais iônicos que se abrem e fecham em resposta a mudanças na voltagem da membrana.</li>
+                            <li><span class="term" data-description="Possuem um portão de ativação e um de inativação. Abrem-se muito rapidamente quando o limiar é atingido, causando a despolarização. Inativam-se rapidamente no pico do potencial de ação.">Canais de Na⁺</span>: Rápidos e responsáveis pela fase de subida.</li>
+                            <li><span class="term" data-description="Possuem apenas um portão de ativação que se abre lentamente em resposta à despolarização. Sua abertura tardia é responsável pela repolarização e hiperpolarização.">Canais de K⁺</span>: Lentos e responsáveis pela fase de descida.</li>
+                            <li>A sequência precisa de abertura e fechamento desses canais gera a forma de onda característica do potencial de ação.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-periodo-refratario">
+                <div class="summary">Período Refratário</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>Após um potencial de ação, há um breve período em que o neurônio não pode disparar outro.</li>
+                            <li><span class="term" data-description="Ocorre durante a despolarização e a maior parte da repolarização. Nenhum estímulo, não importa quão forte, pode gerar outro potencial de ação porque os canais de Na+ estão abertos ou inativados.">Período Refratário Absoluto</span>: Impossível disparar novamente. Garante que o sinal se propague em uma única direção.</li>
+                            <li><span class="term" data-description="Ocorre durante a hiperpolarização. Um estímulo mais forte que o normal é necessário para atingir o limiar e gerar um potencial de ação, pois a membrana está mais negativa e alguns canais de K+ ainda estão abertos.">Período Refratário Relativo</span>: Difícil, mas possível, disparar novamente. Ajuda a codificar a intensidade do estímulo (estímulos mais fortes podem gerar potenciais de ação mais frequentes).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="topic-card" id="topic-anestesicos-locais">
+                <div class="summary">Anestésicos Locais</div>
+                <div class="topic-content-wrapper">
+                    <div class="topic-content">
+                        <ul>
+                            <li>Fármacos como a lidocaína e a procaína funcionam bloqueando a dor de forma localizada.</li>
+                            <li>O mecanismo de ação deles é o <span class="term" data-description="Essas moléculas se ligam aos canais de sódio dependentes de voltagem, impedindo que eles se abram.">bloqueio dos canais de Na⁺ dependentes de voltagem</span>.</li>
+                            <li>Sem a abertura dos canais de Na⁺, a despolarização rápida não pode ocorrer.</li>
+                            <li>Como resultado, os neurônios na área afetada não conseguem gerar potenciais de ação para transmitir o sinal de dor ao cérebro.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quiz-section" class="section-container">
+        <div class="section-header-card">
+            <h2 class="section-title">Teste seu Conhecimento</h2>
+            <p class="section-subtitle">Vamos ver o que você aprendeu! Responda às perguntas a seguir para testar sua compreensão sobre a bioeletrogênese.</p>
+        </div>
+
+        <div id="quiz-area" class="w-full max-w-3xl flex flex-col items-center">
+            <div id="quiz-container" class="quiz-container hidden">
+                <div id="quiz-timer">30</div>
+                <h3 id="quiz-question"></h3>
+                <ul id="quiz-options"></ul>
+            </div>
+            <div id="quiz-results" class="quiz-container hidden">
+                <h3>Quiz Finalizado!</h3>
+                <div id="quiz-percentage">100%</div>
+                <div class="results-stats">
+                    <span id="stat-correct-count" class="stat-correct"></span>
+                    <span id="stat-incorrect-count" class="stat-incorrect"></span>
+                </div>
+                <h4 class="text-lg font-semibold mt-6 mb-2 text-slate-700">Tópicos para revisar:</h4>
+                <ul id="missed-topics-list"></ul>
+                 <button id="restart-quiz-btn">Novo Quiz</button>
+            </div>
+            <button id="quiz-start-btn">Começar Quiz</button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-signature">
+        <p>Feito por Rafael Chaves Sebe</p>
+    </footer>
+
+    <!-- Modal Structure -->
+    <div id="modal-overlay" class="fixed inset-0">
+        <div id="modal-content" class="relative">
+             <button id="modal-close-btn" class="absolute top-4 right-4 z-20">&times;</button>
+            <div id="modal-header" class="relative hidden">
+                <h3 id="modal-title"></h3>
+            </div>
+            <div id="modal-image-container" class="hidden">
+                 <!-- SVG will be injected here by JS -->
+            </div>
+            <p id="modal-description"></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Observer for section background changes
+            const bgObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const glowId = `bg-${entry.target.id}`;
+                    const glowEl = document.getElementById(glowId);
+                    if (glowEl) {
+                        if (entry.isIntersecting) {
+                            glowEl.style.opacity = '0.25';
+                        } else {
+                            glowEl.style.opacity = '0';
+                        }
+                    }
+                });
+            }, { threshold: 0.4 }); 
+
+            document.querySelectorAll('#potencial-repouso, #potenciais-graduados, #potencial-acao').forEach(section => {
+                bgObserver.observe(section);
+            });
+
+            // Observer for card animations
+            const cardObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else if (entry.boundingClientRect.top > 0) {
+                        entry.target.classList.remove('visible');
+                    }
+                });
+            }, {
+                threshold: 0.01
+            });
+            document.querySelectorAll('.topic-card, .section-header-card').forEach(card => {
+                cardObserver.observe(card);
+            });
+
+            // Modal logic
+            const modalOverlay = document.getElementById('modal-overlay');
+            const modalContent = document.getElementById('modal-content');
+            const modalHeader = document.getElementById('modal-header');
+            const modalTitle = document.getElementById('modal-title');
+            const modalDescription = document.getElementById('modal-description');
+            const modalCloseBtn = document.getElementById('modal-close-btn');
+            const modalImageContainer = document.getElementById('modal-image-container');
+
+            function openModal() {
+                modalOverlay.classList.add('visible');
+                document.body.style.overflow = 'hidden';
+            }
+
+            const closeModal = () => {
+                modalOverlay.classList.remove('visible');
+                setTimeout(() => {
+                    if (!modalOverlay.classList.contains('visible')) {
+                         document.body.style.overflow = '';
+                         modalImageContainer.innerHTML = '';
+                    }
+                }, 400); 
+            };
+
+            // Event Listeners for Terms
+            document.querySelectorAll('.term').forEach(term => {
+                term.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const title = term.textContent;
+                    const description = term.getAttribute('data-description');
+                    const parentSection = term.closest('section');
+                    let theme = 'potencial-repouso'; 
+                    if (parentSection && parentSection.id) {
+                       if (parentSection.id === 'potenciais-graduados') theme = 'potenciais-graduados';
+                       else if (parentSection.id === 'potencial-acao') theme = 'potencial-acao';
+                    }
+                    
+                    modalContent.classList.remove('image-modal');
+                    modalHeader.classList.remove('hidden');
+                    modalImageContainer.classList.add('hidden');
+                    
+                    modalTitle.textContent = title;
+                    modalDescription.textContent = description;
+                    
+                    modalContent.className = 'relative'; 
+                    modalHeader.className = '';
+                    modalContent.classList.add(`theme-${theme}`);
+                    modalHeader.classList.add(`theme-${theme}`);
+                    
+                    openModal();
+                });
+            });
+
+             // Event Listeners for Images/SVGs
+            document.querySelectorAll('.image-bubble').forEach(bubble => {
+                bubble.addEventListener('click', () => {
+                    const isSvg = bubble.dataset.imgSvg === 'true';
+                    const description = bubble.dataset.imgDescription;
+                    const parentSection = bubble.closest('section');
+                     let theme = 'potencial-repouso'; 
+                    if (parentSection && parentSection.id) {
+                       if (parentSection.id === 'potenciais-graduados') theme = 'potenciais-graduados';
+                       else if (parentSection.id === 'potencial-acao') theme = 'potencial-acao';
+                    }
+
+                    modalContent.classList.add('image-modal');
+                    modalHeader.classList.add('hidden');
+                    modalImageContainer.classList.remove('hidden');
+                    
+                    if (isSvg) {
+                       const svgElement = bubble.querySelector('svg');
+                       modalImageContainer.innerHTML = svgElement.outerHTML;
+                    } 
+                    
+                    modalDescription.textContent = description;
+
+                    modalContent.className = 'relative image-modal'; 
+                    modalContent.classList.add(`theme-${theme}`);
+
+                    openModal();
+                });
+            });
+
+            modalCloseBtn.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', (event) => {
+                if (event.target === modalOverlay) closeModal();
+            });
+            
+            // Accordion logic
+            document.querySelectorAll('.topic-card .summary').forEach(summary => {
+                summary.addEventListener('click', (e) => {
+                    const card = e.currentTarget.parentElement;
+                    toggleAccordion(card);
+                });
+            });
+
+            function toggleAccordion(cardToToggle) {
+                const contentWrapper = cardToToggle.querySelector('.topic-content-wrapper');
+                const isOpen = cardToToggle.classList.contains('is-open');
+
+                const parentGrid = cardToToggle.closest('.topics-grid');
+                parentGrid.querySelectorAll('.topic-card.is-open').forEach(openCard => {
+                    if (openCard !== cardToToggle) {
+                        const otherContentWrapper = openCard.querySelector('.topic-content-wrapper');
+                        otherContentWrapper.style.maxHeight = '0px';
+                        openCard.classList.remove('is-open');
+                    }
+                });
+
+                if (isOpen) {
+                    contentWrapper.style.maxHeight = '0px';
+                    cardToToggle.classList.remove('is-open');
+                } else {
+                    const content = cardToToggle.querySelector('.topic-content');
+                    contentWrapper.style.maxHeight = content.scrollHeight + 'px';
+                    cardToToggle.classList.add('is-open');
+                }
+            }
+            
+            // ===================================
+            // == QUIZ LOGIC
+            // ===================================
+            const questionBank = [
+                // Potencial de Repouso
+                { question: "Qual é o valor aproximado do potencial de membrana em repouso de um neurônio?", topic: "A Diferença de Potencial", options: ["+70 mV", "-55 mV", "+30 mV", "-70 mV"], correctAnswer: 3 },
+                { question: "Consultando a tabela, qual íon é muito mais concentrado dentro da célula (LIC) do que fora (LEC)?", topic: "Concentrações Iônicas", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Cálcio (Ca++)"], correctAnswer: 1, svgId: "svg-concentracao-ions" },
+                { question: "A alta permeabilidade da membrana em repouso ao potássio (K+) é devida principalmente a qual fator?", topic: "Permeabilidade e Canais de Vazamento", options: ["Bomba de Sódio-Potássio", "Canais de Na+ dependentes de voltagem", "Canais de vazamento de K+", "Ânions orgânicos"], correctAnswer: 2 },
+                { question: "Qual é a função principal da Bomba de Sódio-Potássio (Na+/K+ ATPase)?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Gerar a despolarização", "Manter os gradientes de concentração de Na+ e K+", "Fechar os canais de vazamento", "Causar a hiperpolarização"], correctAnswer: 1 },
+
+                // Potenciais Graduados
+                { question: "Uma característica fundamental dos potenciais graduados é que sua amplitude:", topic: "Magnitude Variável e Decremento", options: ["É sempre a mesma ('tudo ou nada')", "Diminui com a distância do estímulo", "Aumenta com a distância do estímulo", "É sempre de +30 mV"], correctAnswer: 1 },
+                { question: "No gráfico de 'Respostas locais', por que as curvas 'b' e 'c' não disparam um potencial de ação?", topic: "Somação e o Limiar de Disparo", options: ["Porque são hiperpolarizantes", "Porque atingem +30 mV", "Porque não atingem o limiar de disparo", "Porque os canais de K+ estão bloqueados"], correctAnswer: 2, svgId: "svg-respostas-locais" },
+                { question: "Um potencial graduado que torna a membrana do neurônio menos negativa (ex: de -70mV para -60mV) é chamado de:", topic: "PEPS vs. PIPS", options: ["Potencial Inibitório Pós-Sináptico (PIPS)", "Potencial de Ação", "Potencial Excitatório Pós-Sináptico (PEPS)", "Hiperpolarização"], correctAnswer: 2 },
+                
+                // Potencial de Ação
+                { question: "No gráfico do potencial de ação, o que causa a rápida despolarização indicada pelo número (3)?", topic: "Fases do Potencial de Ação", options: ["Abertura dos canais de K+", "Fechamento dos canais de Na+", "Abertura rápida dos canais de Na+", "Ação da bomba de Na+/K+"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                { question: "A fase de repolarização (5) do potencial de ação é causada principalmente pela:", topic: "Fases do Potencial de Ação", options: ["Entrada de Na+", "Saída de K+", "Entrada de Cl-", "Inativação da bomba de Na+/K+"], correctAnswer: 1, svgId: "svg-potencial-acao" },
+                { question: "O que é o 'limiar' de disparo de um potencial de ação?", topic: "Fases do Potencial de Ação", options: ["O pico máximo de voltagem (+30 mV)", "O mesmo que o potencial de repouso (-70 mV)", "A voltagem que deve ser atingida para iniciar o evento 'tudo ou nada' (-55 mV)", "O período de hiperpolarização"], correctAnswer: 2 },
+                { question: "Durante o período refratário absoluto, é impossível disparar um novo potencial de ação porque os canais de Na+ estão:", topic: "Período Refratário", options: ["Fechados e prontos para abrir", "Abertos ou inativados", "Lentos para fechar", "Bloqueados pelo K+"], correctAnswer: 1 },
+                { question: "Anestésicos locais, como a lidocaína, impedem a transmissão da dor ao bloquear qual estrutura?", topic: "Anestésicos Locais", options: ["A bomba de Sódio-Potássio", "Os canais de vazamento de Potássio", "Os receptores de neurotransmissores", "Os canais de Sódio dependentes de voltagem"], correctAnswer: 3 },
+                { question: "A fase de hiperpolarização (6) no gráfico ocorre porque:", topic: "Fases do Potencial de Ação", options: ["Os canais de Na+ abrem novamente", "A bomba de Na+/K+ para de funcionar", "Os canais de K+ são lentos para fechar, permitindo a saída contínua de K+", "Há uma entrada de íons Cl-"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+            ];
+
+            const startBtn = document.getElementById('quiz-start-btn');
+            const restartBtn = document.getElementById('restart-quiz-btn');
+            const quizContainer = document.getElementById('quiz-container');
+            const resultsContainer = document.getElementById('quiz-results');
+            const questionEl = document.getElementById('quiz-question');
+            const optionsEl = document.getElementById('quiz-options');
+            const timerEl = document.getElementById('quiz-timer');
+            
+            let currentQuestionIndex = 0;
+            let score = 0;
+            let missedTopics = [];
+            let timerInterval;
+            let activeQuiz = [];
+            
+            function startQuiz() {
+                // Seleciona 8 perguntas aleatórias do banco
+                activeQuiz = [...questionBank].sort(() => 0.5 - Math.random()).slice(0, 8);
+                
+                currentQuestionIndex = 0;
+                score = 0;
+                missedTopics = [];
+                startBtn.classList.add('hidden');
+                resultsContainer.classList.add('hidden');
+                quizContainer.classList.remove('hidden');
+                showQuestion();
+            }
+
+            function showQuestion() {
+                resetState();
+                if (currentQuestionIndex >= activeQuiz.length) {
+                    showResults();
+                    return;
+                }
+                const questionData = activeQuiz[currentQuestionIndex];
+
+                // Add SVG if it exists for the question
+                if (questionData.svgId) {
+                    const svgContainer = document.getElementById(questionData.svgId);
+                    if (svgContainer) {
+                        const svgElement = svgContainer.querySelector('svg').cloneNode(true);
+                        svgElement.classList.add('quiz-question-svg');
+                        svgElement.style.maxWidth = '400px';
+                        svgElement.style.margin = '0 auto 1.5rem auto';
+                        svgElement.style.backgroundColor = 'rgba(255,255,255,0.4)';
+                        svgElement.style.borderRadius = '1rem';
+                        svgElement.style.padding = '0.5rem';
+                        questionEl.parentNode.insertBefore(svgElement, questionEl);
+                    }
+                }
+
+                questionEl.textContent = questionData.question;
+                
+                questionData.options.forEach((option, index) => {
+                    const li = document.createElement('li');
+                    li.textContent = option;
+                    li.classList.add('quiz-option');
+                    li.dataset.index = index;
+                    li.addEventListener('click', selectAnswer);
+                    optionsEl.appendChild(li);
+                });
+                
+                startTimer();
+            }
+
+            function startTimer() {
+                let timeLeft = 30;
+                timerEl.textContent = timeLeft;
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerEl.textContent = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        selectAnswer(null); // Time's up
+                    }
+                }, 1000);
+            }
+
+            function resetState() {
+                clearInterval(timerInterval);
+                const existingSvg = quizContainer.querySelector('.quiz-question-svg');
+                if (existingSvg) {
+                    existingSvg.remove();
+                }
+                while(optionsEl.firstChild) {
+                    optionsEl.removeChild(optionsEl.firstChild);
+                }
+                document.body.classList.remove('correct-bg', 'incorrect-bg');
+            }
+            
+            function selectAnswer(e) {
+                clearInterval(timerInterval);
+                const selectedOption = e ? e.target : null;
+                const currentQuestion = activeQuiz[currentQuestionIndex];
+                const correctIndex = currentQuestion.correctAnswer;
+                let isCorrect = false;
+
+                if(selectedOption && parseInt(selectedOption.dataset.index) === correctIndex) {
+                    isCorrect = true;
+                }
+                
+                Array.from(optionsEl.children).forEach((optionNode, index) => {
+                    optionNode.classList.add('disabled');
+                    if (index === correctIndex) {
+                        optionNode.classList.add('correct-answer');
+                    }
+                });
+
+                if (isCorrect) {
+                    score++;
+                    if(selectedOption) selectedOption.classList.add('correct-answer');
+                    document.body.classList.add('correct-bg');
+                } else {
+                    if (selectedOption) {
+                        selectedOption.classList.add('incorrect-answer');
+                    }
+                    missedTopics.push(currentQuestion.topic);
+                    document.body.classList.add('incorrect-bg');
+                }
+
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if(currentQuestionIndex < activeQuiz.length) {
+                        showQuestion();
+                    } else {
+                        showResults();
+                    }
+                }, 2500); 
+            }
+            
+            function showResults() {
+                resetState();
+                quizContainer.classList.add('hidden');
+                resultsContainer.classList.remove('hidden');
+
+                const percentage = activeQuiz.length > 0 ? Math.round((score / activeQuiz.length) * 100) : 0;
+                document.getElementById('quiz-percentage').textContent = `${percentage}%`;
+                document.getElementById('stat-correct-count').textContent = `✔️ ${score} Acertos`;
+                document.getElementById('stat-incorrect-count').textContent = `❌ ${activeQuiz.length - score} Erros`;
+                
+                const missedListEl = document.getElementById('missed-topics-list');
+                missedListEl.innerHTML = '';
+                
+                if (missedTopics.some(t => t)) { // Check if there are any defined topics
+                     const uniqueMissedTopics = [...new Set(missedTopics.filter(t => t))]; // Filter out undefined
+                     
+                     uniqueMissedTopics.forEach(topicName => {
+                         const targetCard = Array.from(document.querySelectorAll('.topic-card .summary'))
+                            .find(s => s.textContent.trim() === topicName)?.parentElement;
+
+                         if (targetCard) {
+                             const bubble = document.createElement('li');
+                             bubble.textContent = topicName;
+                             bubble.classList.add('missed-topic-bubble');
+
+                             bubble.addEventListener('click', (e) => {
+                                 e.currentTarget.classList.add('visited-topic');
+                                 targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                 if (!targetCard.classList.contains('is-open')) {
+                                     toggleAccordion(targetCard);
+                                 }
+                             });
+                             missedListEl.appendChild(bubble);
+                         }
+                     });
+                } else {
+                     const congrats = document.createElement('li');
+                     if (activeQuiz.length > 0 && score === activeQuiz.length) {
+                        congrats.textContent = "Parabéns, você acertou tudo!";
+                        congrats.classList.add('text-green-600', 'font-semibold');
+                     } else {
+                        congrats.textContent = "Você não errou nenhuma questão com tópico associado. Bom trabalho!";
+                     }
+                     missedListEl.appendChild(congrats);
+                }
+            }
+
+            startBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', startQuiz);
+        });
+    </script>
+</body>
+</html>
