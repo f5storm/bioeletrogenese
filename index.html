@@ -471,26 +471,101 @@
             position: relative;
         }
         
-        #quiz-timer {
-            position: absolute;
-            top: -20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            color: var(--text-primary);
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        /* New Progress Bar Styles */
+        #progress-bar-container {
+            width: 100%;
+            max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-radius: 9999px;
+            padding: 0.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             border: 1px solid rgba(255, 255, 255, 0.5);
         }
+        #progress-bar-fill {
+            height: 1.5rem;
+            background: linear-gradient(90deg, #4ade80, #3b82f6);
+            border-radius: 9999px;
+            transition: width 0.5s ease-in-out;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.875rem;
+        }
+        #progress-label {
+            text-align: center;
+            margin-top: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
 
+        /* == MODIFIED/NEW STYLES == */
+
+        /* New Difficulty Indicator Styles */
+        #difficulty-indicator {
+            position: absolute;
+            top: 2.5rem;
+            right: 2.5rem;
+            display: flex;
+            gap: 4px;
+            height: 44px; /* To vertically align with the timer circle */
+            align-items: center;
+        }
+        .difficulty-bar {
+            width: 1.25rem; /* 20px */
+            height: 0.5rem; /* 8px */
+            border-radius: 9999px;
+            background-color: #e2e8f0; /* slate-200 for empty */
+            transition: background-color 0.3s ease;
+        }
+        #difficulty-indicator.facil .difficulty-bar:nth-child(1) {
+            background-color: #22c55e; /* green-500 */
+        }
+        #difficulty-indicator.media .difficulty-bar:nth-child(-n+2) {
+            background-color: #f59e0b; /* amber-500 */
+        }
+        #difficulty-indicator.dificil .difficulty-bar:nth-child(-n+3) {
+            background-color: #ef4444; /* red-500 */
+        }
+        
+        /* Timer Display Styles */
+        #timer-display {
+            position: absolute;
+            top: 2.5rem;
+            left: 2.5rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.4);
+            border: 3px solid var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        #timer-display.warning {
+            border-color: #f59e0b;
+            color: #b45309;
+            transform: scale(1.1);
+        }
+        #timer-display.danger {
+            border-color: #ef4444;
+            color: #991b1b;
+            transform: scale(1.1);
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+            70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+        
         #modal-description { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; padding: 0 2rem 2rem 2rem; }
         
         #quiz-question {
@@ -498,6 +573,8 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 2rem;
+            padding: 0 60px; /* Space for timer and difficulty */
+            text-align: center;
         }
 
         #quiz-options {
@@ -784,9 +861,9 @@
                 <div class="topic-content-wrapper">
                     <div class="topic-content">
                         <ul>
-                           <li>São pequenas e breves alterações no potencial de membrana, confinadas a uma pequena região.</li>
-                           <li>São gerados pela abertura de canais iônicos dependentes de ligantes (em sinapses) ou por estímulos sensoriais (em receptores).</li>
-                           <li>Podem ser uma <span class="term" data-description="O potencial de membrana se torna menos negativo (mais próximo de zero). Geralmente é excitatório, aumentando a chance de um neurônio disparar.">despolarização</span> (entrada de Na⁺) ou uma <span class="term" data-description="O potencial de membrana se torna mais negativo (mais longe de zero). Geralmente é inibitório, diminuindo a chance de um neurônio disparar.">hiperpolarização</span> (saída de K⁺ ou entrada de Cl⁻).</li>
+                            <li>São pequenas e breves alterações no potencial de membrana, confinadas a uma pequena região.</li>
+                            <li>São gerados pela abertura de canais iônicos dependentes de ligantes (em sinapses) ou por estímulos sensoriais (em receptores).</li>
+                            <li>Podem ser uma <span class="term" data-description="O potencial de membrana se torna menos negativo (mais próximo de zero). Geralmente é excitatório, aumentando a chance de um neurônio disparar.">despolarização</span> (entrada de Na⁺) ou uma <span class="term" data-description="O potencial de membrana se torna mais negativo (mais longe de zero). Geralmente é inibitório, diminuindo a chance de um neurônio disparar.">hiperpolarização</span> (saída de K⁺ ou entrada de Cl⁻).</li>
                         </ul>
                     </div>
                 </div>
@@ -837,32 +914,32 @@
 
                                 <text x="15" y="160" text-anchor="middle" writing-mode="vertical-rl" transform="rotate(180 15 160)" font-weight="600">$V_m$ (mV)</text>
                                 <text x="215" y="325" text-anchor="middle" font-weight="600">t (ms)</text>
-                        
+                                
                                 <!-- Threshold Line -->
                                 <line x1="50" y1="230" x2="190" y2="230" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="5 3"/>
                                 <g>
                                     <rect x="195" y="220" width="55" height="22" rx="5" fill="rgba(255,255,255,0.7)"></rect>
                                     <text x="222" y="235" text-anchor="middle" font-weight="500">Limiar</text>
                                 </g>
-                        
+                                
                                 <!-- Curves -->
                                 <!-- Curve a (hyperpolarization) -->
                                 <path d="M 70 270 C 90 290, 150 290, 170 270" stroke="#a855f7" stroke-width="2.5" fill="none"/>
                                 <text x="120" y="292" fill="#a855f7" font-weight="bold">a</text>
-                        
+                                
                                 <!-- Curve b (small depolarization) -->
                                 <path d="M 70 270 C 100 250, 160 250, 190 270" stroke="#16a34a" stroke-width="2.5" fill="none"/>
                                 <text x="130" y="248" fill="#16a34a" font-weight="bold">b</text>
-                        
+                                
                                 <!-- Curve c (larger depolarization) -->
                                 <path d="M 70 270 C 110 230, 170 230, 205 270" stroke="#0ea5e9" stroke-width="2.5" fill="none"/>
                                 <text x="175" y="225" fill="#0ea5e9" font-weight="bold">c</text>
-                        
+                                
                                 <!-- Curve d (action potential) -->
                                 <path d="M 70 270 C 120 230, 150 230, 170 230" stroke="#dc2626" stroke-width="2.5" fill="none"/>
                                 <path d="M 170 230 L 180 190 L 190 85 L 195 40" stroke="#dc2626" stroke-width="2.5" fill="none"/>
                                 <text x="160" y="210" fill="#dc2626" font-weight="bold">d</text>
-                        
+                                
                                 <!-- Labels with translucent background -->
                                 <g>
                                     <rect x="270" y="265" width="115" height="45" rx="8" fill="rgba(255,255,255,0.7)"></rect>
@@ -1010,7 +1087,7 @@
                                     <!-- Marker 6 -->
                                     <circle cx="325" cy="345" r="10" fill="#a855f7"/>
                                     <text x="325" y="349">6</text>
-                                     <!-- Marker 7 -->
+                                      <!-- Marker 7 -->
                                     <circle cx="420" cy="315" r="10" fill="#a855f7"/>
                                     <text x="420" y="319">7</text>
                                 </g>
@@ -1068,8 +1145,20 @@
         </div>
 
         <div id="quiz-area" class="w-full max-w-3xl flex flex-col items-center">
+            
+            <!-- Progress Bar -->
+            <div id="progress-bar-container">
+                <div id="progress-bar-fill" style="width: 0%;">0%</div>
+            </div>
+            <div id="progress-label">Progresso: 0 de 60 questões dominadas</div>
+
             <div id="quiz-container" class="quiz-container hidden">
-                <div id="quiz-timer">30</div>
+                <div id="timer-display">30</div>
+                <div id="difficulty-indicator">
+                    <span class="difficulty-bar"></span>
+                    <span class="difficulty-bar"></span>
+                    <span class="difficulty-bar"></span>
+                </div>
                 <h3 id="quiz-question"></h3>
                 <ul id="quiz-options"></ul>
             </div>
@@ -1090,7 +1179,7 @@
 
     <!-- Footer -->
     <footer class="footer-signature">
-        <p>Feito por Rafael Chaves Sebe</p>
+        <p>Feito por Rafael Chaves Sebe. Quiz aprimorado por IA.</p>
     </footer>
 
     <!-- Modal Structure -->
@@ -1101,7 +1190,7 @@
                 <h3 id="modal-title"></h3>
             </div>
             <div id="modal-image-container" class="hidden">
-                 <!-- SVG will be injected here by JS -->
+                <!-- SVG will be injected here by JS -->
             </div>
             <p id="modal-description"></p>
         </div>
@@ -1264,27 +1353,78 @@
             }
             
             // ===================================
-            // == QUIZ LOGIC
+            // == QUIZ LOGIC V3 (with Timer)
             // ===================================
-            const questionBank = [
-                // Potencial de Repouso
-                { question: "Qual é o valor aproximado do potencial de membrana em repouso de um neurônio?", topic: "A Diferença de Potencial", options: ["+70 mV", "-55 mV", "+30 mV", "-70 mV"], correctAnswer: 3 },
-                { question: "Consultando a tabela, qual íon é muito mais concentrado dentro da célula (LIC) do que fora (LEC)?", topic: "Concentrações Iônicas", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Cálcio (Ca++)"], correctAnswer: 1, svgId: "svg-concentracao-ions" },
-                { question: "A alta permeabilidade da membrana em repouso ao potássio (K+) é devida principalmente a qual fator?", topic: "Permeabilidade e Canais de Vazamento", options: ["Bomba de Sódio-Potássio", "Canais de Na+ dependentes de voltagem", "Canais de vazamento de K+", "Ânions orgânicos"], correctAnswer: 2 },
-                { question: "Qual é a função principal da Bomba de Sódio-Potássio (Na+/K+ ATPase)?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Gerar a despolarização", "Manter os gradientes de concentração de Na+ e K+", "Fechar os canais de vazamento", "Causar a hiperpolarização"], correctAnswer: 1 },
 
-                // Potenciais Graduados
-                { question: "Uma característica fundamental dos potenciais graduados é que sua amplitude:", topic: "Magnitude Variável e Decremento", options: ["É sempre a mesma ('tudo ou nada')", "Diminui com a distância do estímulo", "Aumenta com a distância do estímulo", "É sempre de +30 mV"], correctAnswer: 1 },
-                { question: "No gráfico de 'Respostas locais', por que as curvas 'b' e 'c' não disparam um potencial de ação?", topic: "Somação e o Limiar de Disparo", options: ["Porque são hiperpolarizantes", "Porque atingem +30 mV", "Porque não atingem o limiar de disparo", "Porque os canais de K+ estão bloqueados"], correctAnswer: 2, svgId: "svg-respostas-locais" },
-                { question: "Um potencial graduado que torna a membrana do neurônio menos negativa (ex: de -70mV para -60mV) é chamado de:", topic: "PEPS vs. PIPS", options: ["Potencial Inibitório Pós-Sináptico (PIPS)", "Potencial de Ação", "Potencial Excitatório Pós-Sináptico (PEPS)", "Hiperpolarização"], correctAnswer: 2 },
+            const questionBank = [
+                // --- FÁCIL: 12 Teóricas + 8 Gráficas = 20 ---
+                { id: 1, difficulty: 'Fácil', question: "Qual é o valor aproximado do potencial de membrana em repouso de um neurônio?", topic: "A Diferença de Potencial", options: ["+70 mV", "-55 mV", "+30 mV", "-70 mV"], correctAnswer: 3 },
+                { id: 2, difficulty: 'Fácil', question: "O interior de um neurônio em repouso é...", topic: "A Diferença de Potencial", options: ["Positivo em relação ao exterior", "Negativo em relação ao exterior", "Neutro", "Positivo e negativo alternadamente"], correctAnswer: 1 },
+                { id: 3, difficulty: 'Fácil', question: "Qual íon tem maior concentração no Líquido Intracelular (LIC) durante o repouso?", topic: "Concentrações Iônicas", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Cálcio (Ca++)"], correctAnswer: 1 },
+                { id: 4, difficulty: 'Fácil', question: "A membrana em repouso é mais permeável a qual íon?", topic: "Permeabilidade e Canais de Vazamento", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Proteínas"], correctAnswer: 1 },
+                { id: 5, difficulty: 'Fácil', question: "O que é uma despolarização?", topic: "O que são Potenciais Graduados?", options: ["A membrana fica mais negativa", "A membrana fica mais positiva", "A membrana volta ao repouso", "A membrana não sofre alteração"], correctAnswer: 1 },
+                { id: 6, difficulty: 'Fácil', question: "O princípio do 'tudo ou nada' se aplica a qual fenômeno?", topic: "Fases do Potencial de Ação", options: ["Potencial de Repouso", "Potencial Graduado", "Potencial de Ação", "Bomba de Sódio-Potássio"], correctAnswer: 2 },
+                { id: 7, difficulty: 'Fácil', question: "A fase de subida rápida do potencial de ação (despolarização) é causada pela entrada de qual íon?", topic: "Canais Dependentes de Voltagem", options: ["K+", "Cl-", "Na+", "Ca++"], correctAnswer: 2 },
+                { id: 8, difficulty: 'Fácil', question: "A fase de descida do potencial de ação (repolarização) é causada pela saída de qual íon?", topic: "Canais Dependentes de Voltagem", options: ["K+", "Na+", "Cl-", "Ânions"], correctAnswer: 0 },
+                { id: 9, difficulty: 'Fácil', question: "Qual estrutura gasta energia (ATP) para manter os gradientes iônicos?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Canal de vazamento de K+", "Canal de Na+ dependente de voltagem", "Bomba de Sódio-Potássio", "Receptor de neurotransmissor"], correctAnswer: 2 },
+                { id: 10, difficulty: 'Fácil', question: "Um PEPS (Potencial Excitatório Pós-Sináptico) torna o neurônio...", topic: "PEPS vs. PIPS", options: ["Mais propenso a disparar", "Menos propenso a disparar", "Hiperpolarizado", "Não altera a probabilidade de disparo"], correctAnswer: 0 },
+                { id: 11, difficulty: 'Fácil', question: "Um PIPS (Potencial Inibitório Pós-Sináptico) torna a membrana...", topic: "PEPS vs. PIPS", options: ["Mais positiva (despolarizada)", "Mais negativa (hiperpolarizada)", "Atinge o limiar", "Não sofre alteração"], correctAnswer: 1 },
+                { id: 12, difficulty: 'Fácil', question: "Anestésicos locais funcionam bloqueando quais canais?", topic: "Anestésicos Locais", options: ["Canais de K+", "Canais de Cl-", "Canais de Na+", "Canais de vazamento"], correctAnswer: 2 },
+                // Gráficas Fáceis
+                { id: 13, difficulty: 'Fácil', isGraphic: true, question: "Observando a tabela, qual íon é muito mais concentrado fora da célula (LEC) do que dentro (LIC)?", topic: "Concentrações Iônicas", options: ["Potássio (K+)", "Ânions orgânicos", "Sódio (Na+)", "Magnésio (Mg++)"], correctAnswer: 2, svgId: "svg-concentracao-ions" },
+                { id: 14, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Respostas Locais', a linha pontilhada horizontal representa o quê?", topic: "Somação e o Limiar de Disparo", options: ["O potencial de repouso", "O pico do potencial de ação", "O limiar de disparo", "O ponto de hiperpolarização"], correctAnswer: 2, svgId: "svg-respostas-locais" },
+                { id: 15, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Potencial de Ação', qual número representa o estado de repouso da membrana?", topic: "Fases do Potencial de Ação", options: ["1", "3", "4", "6"], correctAnswer: 0, svgId: "svg-potencial-acao" },
+                { id: 16, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Potencial de Ação', a grande subida da voltagem (marcada com 'Entrada de Na+') corresponde a qual fase?", topic: "Fases do Potencial de Ação", options: ["Repolarização", "Hiperpolarização", "Repouso", "Despolarização"], correctAnswer: 3, svgId: "svg-potencial-acao" },
+                { id: 17, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Respostas Locais', qual curva representa uma hiperpolarização (a voltagem fica mais negativa)?", topic: "O que são Potenciais Graduados?", options: ["a", "b", "c", "d"], correctAnswer: 0, svgId: "svg-respostas-locais" },
+                { id: 18, difficulty: 'Fácil', isGraphic: true, question: "De acordo com a tabela, a concentração de K+ é aproximadamente quantas vezes maior dentro da célula (LIC) do que fora (LEC)?", topic: "Concentrações Iônicas", options: ["2 vezes", "10 vezes", "30 vezes", "100 vezes"], correctAnswer: 2, svgId: "svg-concentracao-ions" },
+                { id: 19, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Potencial de Ação', o que o número 2 representa?", topic: "Fases do Potencial de Ação", options: ["O pico da despolarização", "O início da repolarização", "O estímulo atingindo o limiar", "O final da hiperpolarização"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                { id: 20, difficulty: 'Fácil', isGraphic: true, question: "No gráfico 'Respostas Locais', qual letra indica a resposta que efetivamente dispara um potencial de ação?", topic: "Somação e o Limiar de Disparo", options: ["a", "b", "c", "d"], correctAnswer: 3, svgId: "svg-respostas-locais" },
                 
-                // Potencial de Ação
-                { question: "No gráfico do potencial de ação, o que causa a rápida despolarização indicada pelo número (3)?", topic: "Fases do Potencial de Ação", options: ["Abertura dos canais de K+", "Fechamento dos canais de Na+", "Abertura rápida dos canais de Na+", "Ação da bomba de Na+/K+"], correctAnswer: 2, svgId: "svg-potencial-acao" },
-                { question: "A fase de repolarização (5) do potencial de ação é causada principalmente pela:", topic: "Fases do Potencial de Ação", options: ["Entrada de Na+", "Saída de K+", "Entrada de Cl-", "Inativação da bomba de Na+/K+"], correctAnswer: 1, svgId: "svg-potencial-acao" },
-                { question: "O que é o 'limiar' de disparo de um potencial de ação?", topic: "Fases do Potencial de Ação", options: ["O pico máximo de voltagem (+30 mV)", "O mesmo que o potencial de repouso (-70 mV)", "A voltagem que deve ser atingida para iniciar o evento 'tudo ou nada' (-55 mV)", "O período de hiperpolarização"], correctAnswer: 2 },
-                { question: "Durante o período refratário absoluto, é impossível disparar um novo potencial de ação porque os canais de Na+ estão:", topic: "Período Refratário", options: ["Fechados e prontos para abrir", "Abertos ou inativados", "Lentos para fechar", "Bloqueados pelo K+"], correctAnswer: 1 },
-                { question: "Anestésicos locais, como a lidocaína, impedem a transmissão da dor ao bloquear qual estrutura?", topic: "Anestésicos Locais", options: ["A bomba de Sódio-Potássio", "Os canais de vazamento de Potássio", "Os receptores de neurotransmissores", "Os canais de Sódio dependentes de voltagem"], correctAnswer: 3 },
-                { question: "A fase de hiperpolarização (6) no gráfico ocorre porque:", topic: "Fases do Potencial de Ação", options: ["Os canais de Na+ abrem novamente", "A bomba de Na+/K+ para de funcionar", "Os canais de K+ são lentos para fechar, permitindo a saída contínua de K+", "Há uma entrada de íons Cl-"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                // --- MÉDIA: 14 Teóricas + 6 Gráficas = 20 ---
+                { id: 21, difficulty: 'Média', question: "Por que a bomba de Na+/K+ é considerada 'eletrogênica'?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Porque ela move apenas íons positivos", "Porque ela não usa energia", "Porque ela move mais cargas positivas para fora (3 Na+) do que para dentro (2 K+)", "Porque ela gera a despolarização"], correctAnswer: 2 },
+                { id: 22, difficulty: 'Média', question: "Potenciais graduados se propagam com decremento. O que isso significa?", topic: "Magnitude Variável e Decremento", options: ["Eles mantêm a mesma amplitude", "Eles perdem força à medida que se afastam da origem", "Eles só ocorrem em uma direção", "Eles são sempre excitatórios"], correctAnswer: 1 },
+                { id: 23, difficulty: 'Média', question: "O que é 'somação' no contexto de potenciais graduados?", topic: "Somação e o Limiar de Disparo", options: ["O processo de um potencial de ação se tornar mais fraco", "A combinação de múltiplos potenciais graduados para atingir o limiar", "A inativação dos canais de sódio", "A repolarização da membrana"], correctAnswer: 1 },
+                { id: 24, difficulty: 'Média', question: "O que aconteceria se os canais de K+ dependentes de voltagem não se abrissem?", topic: "Canais Dependentes de Voltagem", options: ["A despolarização não ocorreria", "O potencial de repouso seria positivo", "A repolarização seria muito lenta ou não aconteceria", "O limiar de disparo não seria atingido"], correctAnswer: 2 },
+                { id: 25, difficulty: 'Média', question: "Durante o Período Refratário Relativo, por que é necessário um estímulo mais forte para disparar um potencial de ação?", topic: "Período Refratário", options: ["Porque os canais de Na+ estão inativados", "Porque a membrana está hiperpolarizada (mais negativa que o repouso)", "Porque a bomba de Na+/K+ está inativa", "Porque não há K+ dentro da célula"], correctAnswer: 1 },
+                { id: 26, difficulty: 'Média', question: "Qual é a principal diferença entre um potencial graduado e um potencial de ação?", topic: "Magnitude Variável e Decremento", options: ["Graduados são 'tudo ou nada', de ação têm amplitude variável", "Graduados têm amplitude variável, de ação são 'tudo ou nada'", "Apenas potenciais de ação podem ser inibitórios", "Apenas potenciais graduados envolvem íons K+"], correctAnswer: 1 },
+                { id: 27, difficulty: 'Média', question: "A inativação dos canais de Na+ é crucial para qual processo?", topic: "Período Refratário", options: ["Manter o potencial de repouso", "Iniciar a despolarização", "Garantir o período refratário absoluto e a propagação unidirecional do sinal", "A ação da bomba de Na+/K+"], correctAnswer: 2 },
+                { id: 28, difficulty: 'Média', question: "Se um neurotransmissor abre canais de Cl- (íon negativo), que tipo de potencial ele irá gerar?", topic: "PEPS vs. PIPS", options: ["Um PEPS", "Um PIPS", "Um potencial de ação diretamente", "Nenhum potencial"], correctAnswer: 1 },
+                { id: 29, difficulty: 'Média', question: "O que estabelece o 'ponto de equilíbrio' para o K+, que é de aproximadamente -90mV?", topic: "Permeabilidade e Canais de Vazamento", options: ["A bomba de Na+/K+", "A abertura dos canais de Na+", "O balanço entre a força do gradiente químico (que empurra K+ para fora) e a força elétrica (que puxa K+ para dentro)", "A presença de ânions orgânicos apenas"], correctAnswer: 2 },
+                { id: 30, difficulty: 'Média', question: "Qual o papel dos canais de vazamento de K+ no potencial de repouso?", topic: "Permeability and Leak Channels", options: ["Eles causam a despolarização", "Eles contribuem significativamente para tornar o interior da célula negativo", "Eles são ativamente fechados pela bomba de Na+/K+", "Eles só se abrem com um estímulo"], correctAnswer: 1 },
+                { id: 31, difficulty: 'Média', question: "Se a bomba de Na+/K+ parasse de funcionar, o que aconteceria a longo prazo?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Os gradientes de Na+ e K+ se dissipariam, e a célula perderia a capacidade de gerar potenciais de ação", "A célula ficaria permanentemente despolarizada", "A célula ficaria permanentemente hiperpolarizada", "Nada mudaria imediatamente"], correctAnswer: 0 },
+                { id: 32, difficulty: 'Média', question: "O que determina se um potencial graduado é um PEPS ou um PIPS?", topic: "PEPS vs. PIPS", options: ["A força do estímulo", "O tipo de íon cujo canal é aberto pelo neurotransmissor", "A distância que ele percorre", "A presença de mielina"], correctAnswer: 1 },
+                { id: 33, difficulty: 'Média', question: "Por que o potencial de ação é ideal para comunicação a longa distância, ao contrário do potencial graduado?", topic: "Magnitude Variável e Decremento", options: ["Porque ele é mais lento", "Porque ele pode ter diferentes amplitudes", "Porque ele é regenerado e não perde força ao longo do axônio", "Porque ele é sempre inibitório"], correctAnswer: 2 },
+                { id: 34, difficulty: 'Média', question: "Qual fase do potencial de ação garante que o impulso nervoso viaje em apenas uma direção (para frente)?", topic: "Período Refratário", options: ["A despolarização", "O período refratário", "A hiperpolarização", "O potencial de repouso"], correctAnswer: 1 },
+                // Gráficas Médias
+                { id: 35, difficulty: 'Média', isGraphic: true, question: "No gráfico 'Potencial de Ação', a fase de hiperpolarização (6) ocorre porque os canais de K+ são...", topic: "Fases do Potencial de Ação", options: ["Rápidos para abrir e fechar", "Lentos para fechar, permitindo mais saída de K+", "Bloqueados por Na+", "Abertos antes dos canais de Na+"], correctAnswer: 1, svgId: "svg-potencial-acao" },
+                { id: 36, difficulty: 'Média', isGraphic: true, question: "No gráfico 'Respostas Locais', se as respostas 'b' e 'c' ocorressem ao mesmo tempo em locais próximos, seu efeito combinado poderia atingir o limiar. Este fenômeno é chamado de:", topic: "Somação e o Limiar de Disparo", options: ["Período refratário", "Decremento", "Somação espacial", "Tudo ou nada"], correctAnswer: 2, svgId: "svg-respostas-locais" },
+                { id: 37, difficulty: 'Média', isGraphic: true, question: "No gráfico 'Potencial de Ação', durante o período entre os pontos 3 e 5, o neurônio está em qual estado refratário?", topic: "Período Refratário", options: ["Relativo", "Absoluto", "Supernormal", "Não está em período refratário"], correctAnswer: 1, svgId: "svg-potencial-acao" },
+                { id: 38, difficulty: 'Média', isGraphic: true, question: "Observando a tabela de íons, por que a entrada de Na+ causa uma despolarização tão forte?", topic: "Concentrações Iônicas", options: ["Porque há pouco Na+ fora da célula", "Porque o Na+ é um íon negativo", "Porque há um forte gradiente de concentração e elétrico empurrando o Na+ para dentro da célula", "Porque o K+ sai ao mesmo tempo"], correctAnswer: 2, svgId: "svg-concentracao-ions" },
+                { id: 39, difficulty: 'Média', isGraphic: true, question: "No gráfico 'Potencial de Ação', qual o evento elétrico que ocorre imediatamente após o ponto 4 (pico)?", topic: "Fases do Potencial de Ação", options: ["Abertura dos canais de Na+", "Fechamento dos canais de K+", "Inativação dos canais de Na+ e abertura completa dos canais de K+", "Ação da bomba de Na+/K+"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                { id: 40, difficulty: 'Média', isGraphic: true, question: "As 'iniciações falhas' mostradas no gráfico 'Potencial de Ação' são um exemplo de quê?", topic: "Somação e o Limiar de Disparo", options: ["Potenciais de ação completos", "Períodos refratários", "Potenciais graduados sublimiares", "Hiperpolarizações"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+
+                // --- DIFÍCIL: 14 Teóricas + 6 Gráficas = 20 ---
+                { id: 41, difficulty: 'Difícil', question: "Se o potencial de repouso é -70mV, mas o potencial de equilíbrio do K+ é -90mV, por que a célula não repousa a -90mV?", topic: "Permeabilidade e Canais de Vazamento", options: ["Porque os canais de K+ estão fechados", "Porque há um pequeno e constante vazamento de Na+ para dentro, tornando o interior um pouco menos negativo", "Porque a bomba de Na+/K+ bombeia mais K+ para dentro", "Porque os ânions orgânicos saem da célula"], correctAnswer: 1 },
+                { id: 42, difficulty: 'Difícil', question: "O que aconteceria com o potencial de ação se uma toxina bloqueasse os portões de inativação dos canais de Na+?", topic: "Canais Dependentes de Voltagem", options: ["O potencial de ação não seria iniciado", "A fase de despolarização seria mais lenta", "A fase de repolarização seria significativamente prolongada ou impedida", "A célula ficaria permanentemente em repouso"], correctAnswer: 2 },
+                { id: 43, difficulty: 'Difícil', question: "A frequência (não a amplitude) dos potenciais de ação codifica o quê?", topic: "Período Refratário", options: ["O tipo de neurotransmissor a ser liberado", "A intensidade do estímulo inicial", "A velocidade de condução do impulso", "A direção do sinal"], correctAnswer: 1 },
+                { id: 44, difficulty: 'Difícil', question: "Qual a consequência do Período Refratário Absoluto na propagação do sinal neural?", topic: "Período Refratário", options: ["Ele permite que o sinal viaje em ambas as direções", "Ele garante que o sinal seja unidirecional e que os potenciais de ação sejam eventos separados", "Ele aumenta a amplitude do potencial de ação", "Ele acelera a repolarização"], correctAnswer: 1 },
+                { id: 45, difficulty: 'Difícil', question: "Por que os canais iônicos dependentes de voltagem são concentrados na zona de gatilho (cone de implantação) do axônio?", topic: "Somação e o Limiar de Disparo", options: ["Porque é a área mais próxima do corpo celular", "Porque essa região tem a menor resistência elétrica", "Porque é o local onde os potenciais graduados são somados e a decisão de disparar um potencial de ação é tomada", "Porque é a única área com canais de vazamento"], correctAnswer: 2 },
+                { id: 46, difficulty: 'Difícil', question: "Qual a principal contribuição da bomba Na+/K+ ATPase para o potencial de repouso?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Gerar diretamente a maior parte da voltagem negativa", "Manter os gradientes de concentração que servem como bateria para os potenciais", "Fechar os canais de K+ dependentes de voltagem", "Causar a hiperpolarização pós-potencial de ação"], correctAnswer: 1 },
+                { id: 47, difficulty: 'Difícil', question: "Um neurônio recebe simultaneamente um PEPS de 10mV e um PIPS de 5mV. Se o potencial de repouso é -70mV, qual será o potencial resultante na membrana?", topic: "PEPS vs. PIPS", options: ["-70mV", "-65mV", "-75mV", "-55mV"], correctAnswer: 1 },
+                { id: 48, difficulty: 'Difícil', question: "Se a concentração extracelular de K+ aumentasse drasticamente (hipercalemia), o que aconteceria com o potencial de repouso?", topic: "Concentrações Iônicas", options: ["Ficaria mais negativo (hiperpolarizado)", "Ficaria menos negativo (despolarizado), tornando a célula mais excitável", "Não mudaria", "Ficaria positivo"], correctAnswer: 1 },
+                { id: 49, difficulty: 'Difícil', question: "A tetrodotoxina (TTX), veneno do baiacu, bloqueia os canais de Na+ dependentes de voltagem. Qual fase do potencial de ação é diretamente impedida pela TTX?", topic: "Anestésicos Locais", options: ["Repolarização", "Hiperpolarização", "Despolarização", "Potencial de repouso"], correctAnswer: 2 },
+                { id: 50, difficulty: 'Difícil', question: "Qual é a relação entre a força de um estímulo e a amplitude de um potencial de ação?", topic: "Fases do Potencial de Ação", options: ["Estímulos mais fortes geram potenciais de ação de maior amplitude", "Não há relação direta; uma vez atingido o limiar, a amplitude é sempre a mesma (tudo ou nada)", "Estímulos mais fracos geram potenciais de ação de maior amplitude", "A amplitude diminui com a força do estímulo"], correctAnswer: 1 },
+                { id: 51, difficulty: 'Difícil', question: "O que limita a frequência máxima de disparo de um neurônio?", topic: "Período Refratário", options: ["A quantidade de ATP disponível", "A duração do período refratário absoluto", "A velocidade da bomba Na+/K+", "O tamanho do corpo celular"], correctAnswer: 1 },
+                { id: 52, difficulty: 'Difícil', question: "A condução saltatória, que é mais rápida, ocorre em axônios mielinizados e o potencial de ação é regenerado em que locais?", topic: "Fases do Potencial de Ação", options: ["Em toda a extensão do axônio", "No corpo celular", "Nos Nódulos de Ranvier", "Nos terminais axônicos"], correctAnswer: 2 },
+                { id: 53, difficulty: 'Difícil', question: "Se uma droga impedisse o fechamento dos canais de vazamento de K+, qual seria o efeito mais provável no potencial de repouso?", topic: "Permeability and Leak Channels", options: ["O potencial de repouso se aproximaria de 0mV", "O potencial de repouso se aproximaria do potencial de equilíbrio do K+ (cerca de -90mV)", "O potencial de repouso se aproximaria do potencial de equilíbrio do Na+ (cerca de +60mV)", "Não haveria efeito"], correctAnswer: 1 },
+                { id: 54, difficulty: 'Difícil', question: "A somação temporal refere-se a:", topic: "Somação e o Limiar de Disparo", options: ["Soma de PEPS/PIPS de diferentes sinapses ao mesmo tempo", "Soma de PEPS/PIPS de uma única sinapse que ocorrem em rápida sucessão", "O tempo que leva para o potencial de ação se propagar", "O tempo do período refratário"], correctAnswer: 1 },
+                // Gráficas Difíceis
+                { id: 55, difficulty: 'Difícil', isGraphic: true, question: "No gráfico 'Potencial de Ação', durante a fase 6, a membrana está mais negativa que em 1. Neste estado (Período Refratário Relativo), por que é mais difícil disparar um novo potencial de ação?", topic: "Período Refratário", options: ["Porque a distância até o limiar (-55mV) é maior", "Porque todos os canais de Na+ estão inativados", "Porque a bomba de Na+/K+ está hiperativa", "Porque o estímulo é fisicamente bloqueado"], correctAnswer: 0, svgId: "svg-potencial-acao" },
+                { id: 56, difficulty: 'Difícil', isGraphic: true, question: "Se uma droga bloqueasse parcialmente os canais de K+ dependentes de voltagem, como a parte descendente da curva no gráfico 'Potencial de Ação' seria afetada?", topic: "Canais Dependentes de Voltagem", options: ["Seria mais rápida", "Não mudaria", "Seria mais lenta e prolongada", "Não existiria"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                { id: 57, difficulty: 'Difícil', isGraphic: true, question: "No gráfico 'Respostas Locais', se a resposta 'a' e a resposta 'd' fossem estimuladas simultaneamente, qual seria o resultado mais provável?", topic: "PEPS vs. PIPS", options: ["Um potencial de ação com o dobro da amplitude", "Nenhum disparo, pois a hiperpolarização de 'a' anularia parcialmente a despolarização de 'd'", "Dois potenciais de ação em sequência", "A célula explodiria"], correctAnswer: 1, svgId: "svg-respostas-locais" },
+                { id: 58, difficulty: 'Difícil', isGraphic: true, question: "Observando a tabela de íons, qual gradiente (químico ou elétrico) é mais forte para o Na+ no potencial de repouso?", topic: "Concentrações Iônicas", options: ["O gradiente elétrico é mais forte", "O gradiente químico é mais forte", "Ambos têm a mesma força", "Ambos são fortes e apontam para dentro da célula, resultando em uma grande força eletromotriz"], correctAnswer: 3, svgId: "svg-concentracao-ions" },
+                { id: 59, difficulty: 'Difícil', isGraphic: true, question: "No gráfico 'Potencial de Ação', em que ponto a condutância (permeabilidade) da membrana ao Na+ é máxima?", topic: "Canais Dependentes de Voltagem", options: ["No ponto 1 (repouso)", "No ponto 2 (limiar)", "Próximo ao ponto 4 (pico)", "No ponto 6 (hiperpolarização)"], correctAnswer: 2, svgId: "svg-potencial-acao" },
+                { id: 60, difficulty: 'Difícil', isGraphic: true, question: "Qual é a principal razão pela qual as curvas 'b' e 'c' no gráfico 'Respostas Locais' retornam ao potencial de repouso em vez de continuarem a subir?", topic: "Magnitude Variável e Decremento", options: ["Pela ação da bomba de Na+/K+", "Porque são eventos 'tudo ou nada'", "Pela propagação com decremento e pela saída passiva de K+ através de canais de vazamento", "Pelo fechamento dos canais de K+"], correctAnswer: 2, svgId: "svg-respostas-locais" },
             ];
 
             const startBtn = document.getElementById('quiz-start-btn');
@@ -1293,17 +1433,54 @@
             const resultsContainer = document.getElementById('quiz-results');
             const questionEl = document.getElementById('quiz-question');
             const optionsEl = document.getElementById('quiz-options');
-            const timerEl = document.getElementById('quiz-timer');
+            const difficultyIndicator = document.getElementById('difficulty-indicator');
+            const progressBarFill = document.getElementById('progress-bar-fill');
+            const progressLabel = document.getElementById('progress-label');
+            const timerDisplay = document.getElementById('timer-display');
             
             let currentQuestionIndex = 0;
             let score = 0;
             let missedTopics = [];
-            let timerInterval;
             let activeQuiz = [];
+            let correctlyAnsweredIds = [];
+
+            let questionTimer;
+            let countdownInterval;
+            const TIMER_DURATION = 30; // seconds
+
+            function loadProgress() {
+                const savedProgress = localStorage.getItem('bioquiz_correctlyAnsweredIds');
+                correctlyAnsweredIds = savedProgress ? JSON.parse(savedProgress) : [];
+                updateProgressBar();
+            }
+
+            function saveProgress() {
+                localStorage.setItem('bioquiz_correctlyAnsweredIds', JSON.stringify(correctlyAnsweredIds));
+            }
+
+            function updateProgressBar() {
+                const totalQuestions = questionBank.length;
+                const answeredCount = correctlyAnsweredIds.length;
+                const percentage = totalQuestions > 0 ? Math.round((answeredCount / totalQuestions) * 100) : 0;
+                
+                progressBarFill.style.width = `${percentage}%`;
+                progressBarFill.textContent = `${percentage}%`;
+                progressLabel.textContent = `Progresso: ${answeredCount} de ${totalQuestions} questões dominadas`;
+            }
             
             function startQuiz() {
-                // Seleciona 8 perguntas aleatórias do banco
-                activeQuiz = [...questionBank].sort(() => 0.5 - Math.random()).slice(0, 8);
+                // Filtra as perguntas que o usuário ainda não acertou
+                const availableQuestions = questionBank.filter(q => !correctlyAnsweredIds.includes(q.id));
+                
+                // Se não houver mais perguntas, mostra uma mensagem
+                if (availableQuestions.length === 0) {
+                     questionEl.textContent = "Parabéns! Você dominou todas as questões. Zere o progresso para começar de novo.";
+                     // Opcional: Adicionar um botão para zerar o progresso.
+                     return;
+                }
+
+                // Seleciona 20 perguntas aleatórias do pool disponível
+                activeQuiz = [...availableQuestions].sort(() => 0.5 - Math.random()).slice(0, 20);
                 
                 currentQuestionIndex = 0;
                 score = 0;
@@ -1314,6 +1491,34 @@
                 showQuestion();
             }
 
+            function startTimer() {
+                clearTimeout(questionTimer);
+                clearInterval(countdownInterval);
+
+                let timeLeft = TIMER_DURATION;
+                timerDisplay.textContent = timeLeft;
+                timerDisplay.className = ''; // Reset classes
+                
+                countdownInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = timeLeft;
+                    if (timeLeft <= 10 && timeLeft > 5) {
+                        timerDisplay.className = 'warning';
+                    } else if (timeLeft <= 5) {
+                        timerDisplay.className = 'danger';
+                    }
+                }, 1000);
+
+                questionTimer = setTimeout(() => {
+                    clearInterval(countdownInterval);
+                    handleTimeUp();
+                }, TIMER_DURATION * 1000);
+            }
+
+            function handleTimeUp() {
+                 selectAnswer(null); // Pass null to indicate time's up
+            }
+
             function showQuestion() {
                 resetState();
                 if (currentQuestionIndex >= activeQuiz.length) {
@@ -1322,8 +1527,15 @@
                 }
                 const questionData = activeQuiz[currentQuestionIndex];
 
+                // Update difficulty indicator
+                difficultyIndicator.textContent = ''; // Clear any text from old implementation
+                // Remove old difficulty classes before adding the new one
+                difficultyIndicator.classList.remove('facil', 'media', 'dificil');
+                difficultyIndicator.classList.add(questionData.difficulty.toLowerCase());
+
+
                 // Add SVG if it exists for the question
-                if (questionData.svgId) {
+                if (questionData.isGraphic && questionData.svgId) {
                     const svgContainer = document.getElementById(questionData.svgId);
                     if (svgContainer) {
                         const svgElement = svgContainer.querySelector('svg').cloneNode(true);
@@ -1337,7 +1549,7 @@
                     }
                 }
 
-                questionEl.textContent = questionData.question;
+                questionEl.textContent = `(${currentQuestionIndex + 1}/${activeQuiz.length}) ${questionData.question}`;
                 
                 questionData.options.forEach((option, index) => {
                     const li = document.createElement('li');
@@ -1347,25 +1559,12 @@
                     li.addEventListener('click', selectAnswer);
                     optionsEl.appendChild(li);
                 });
-                
                 startTimer();
             }
 
-            function startTimer() {
-                let timeLeft = 30;
-                timerEl.textContent = timeLeft;
-                timerInterval = setInterval(() => {
-                    timeLeft--;
-                    timerEl.textContent = timeLeft;
-                    if (timeLeft <= 0) {
-                        clearInterval(timerInterval);
-                        selectAnswer(null); // Time's up
-                    }
-                }, 1000);
-            }
-
             function resetState() {
-                clearInterval(timerInterval);
+                clearTimeout(questionTimer);
+                clearInterval(countdownInterval);
                 const existingSvg = quizContainer.querySelector('.quiz-question-svg');
                 if (existingSvg) {
                     existingSvg.remove();
@@ -1377,8 +1576,13 @@
             }
             
             function selectAnswer(e) {
-                clearInterval(timerInterval);
+                clearTimeout(questionTimer);
+                clearInterval(countdownInterval);
+
                 const selectedOption = e ? e.target : null;
+                // Disable all options after one is clicked
+                Array.from(optionsEl.children).forEach(option => option.removeEventListener('click', selectAnswer));
+
                 const currentQuestion = activeQuiz[currentQuestionIndex];
                 const correctIndex = currentQuestion.correctAnswer;
                 let isCorrect = false;
@@ -1398,6 +1602,12 @@
                     score++;
                     if(selectedOption) selectedOption.classList.add('correct-answer');
                     document.body.classList.add('correct-bg');
+                    // Add question ID to correctly answered list and save
+                    if (!correctlyAnsweredIds.includes(currentQuestion.id)) {
+                        correctlyAnsweredIds.push(currentQuestion.id);
+                        saveProgress();
+                        updateProgressBar();
+                    }
                 } else {
                     if (selectedOption) {
                         selectedOption.classList.add('incorrect-answer');
@@ -1434,7 +1644,7 @@
                      
                      uniqueMissedTopics.forEach(topicName => {
                          const targetCard = Array.from(document.querySelectorAll('.topic-card .summary'))
-                            .find(s => s.textContent.trim() === topicName)?.parentElement;
+                             .find(s => s.textContent.trim() === topicName)?.parentElement;
 
                          if (targetCard) {
                              const bubble = document.createElement('li');
@@ -1454,10 +1664,10 @@
                 } else {
                      const congrats = document.createElement('li');
                      if (activeQuiz.length > 0 && score === activeQuiz.length) {
-                        congrats.textContent = "Parabéns, você acertou tudo!";
-                        congrats.classList.add('text-green-600', 'font-semibold');
+                         congrats.textContent = "Parabéns, você acertou tudo!";
+                         congrats.classList.add('text-green-600', 'font-semibold');
                      } else {
-                        congrats.textContent = "Você não errou nenhuma questão com tópico associado. Bom trabalho!";
+                         congrats.textContent = "Você não errou nenhuma questão com tópico associado. Bom trabalho!";
                      }
                      missedListEl.appendChild(congrats);
                 }
@@ -1465,6 +1675,9 @@
 
             startBtn.addEventListener('click', startQuiz);
             restartBtn.addEventListener('click', startQuiz);
+
+            // Initial load of progress
+            loadProgress();
         });
     </script>
 </body>
