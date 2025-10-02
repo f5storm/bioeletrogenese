@@ -471,7 +471,6 @@
             position: relative;
         }
         
-        /* New Progress Bar Styles */
         #progress-bar-container {
             width: 100%;
             max-width: 800px;
@@ -502,32 +501,31 @@
             color: var(--text-secondary);
         }
 
-        /* == MODIFIED/NEW STYLES == */
-
-        /* New Difficulty Indicator Styles */
-        #difficulty-indicator {
+        /* == MODIFIED/NEW STYLES START == */
+        
+        /* New Question Counter Display */
+        #question-counter-display {
             position: absolute;
             top: 2.5rem;
             right: 2.5rem;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
             display: flex;
-            gap: 4px;
-            height: 44px; /* To vertically align with the timer circle */
             align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            transition: all 0.3s ease;
         }
-        .difficulty-bar {
-            width: 1.25rem; /* 20px */
-            height: 0.5rem; /* 8px */
-            border-radius: 9999px;
-            background-color: #e2e8f0; /* slate-200 for empty */
-            transition: background-color 0.3s ease;
-        }
-        #difficulty-indicator.facil .difficulty-bar:nth-child(1) {
+        #question-counter-display.facil-bg {
             background-color: #22c55e; /* green-500 */
         }
-        #difficulty-indicator.media .difficulty-bar:nth-child(-n+2) {
+        #question-counter-display.media-bg {
             background-color: #f59e0b; /* amber-500 */
         }
-        #difficulty-indicator.dificil .difficulty-bar:nth-child(-n+3) {
+        #question-counter-display.dificil-bg {
             background-color: #ef4444; /* red-500 */
         }
         
@@ -573,9 +571,11 @@
             font-weight: 600;
             color: var(--text-primary);
             margin-bottom: 2rem;
-            padding: 0 60px; /* Space for timer and difficulty */
+            padding: 0 96px; /* Space for timer and difficulty */
             text-align: center;
         }
+        
+        /* == MODIFIED/NEW STYLES END == */
 
         #quiz-options {
             list-style: none;
@@ -1154,11 +1154,7 @@
 
             <div id="quiz-container" class="quiz-container hidden">
                 <div id="timer-display">30</div>
-                <div id="difficulty-indicator">
-                    <span class="difficulty-bar"></span>
-                    <span class="difficulty-bar"></span>
-                    <span class="difficulty-bar"></span>
-                </div>
+                <div id="question-counter-display"></div>
                 <h3 id="quiz-question"></h3>
                 <ul id="quiz-options"></ul>
             </div>
@@ -1362,7 +1358,7 @@
                 { id: 2, difficulty: 'Fácil', question: "O interior de um neurônio em repouso é...", topic: "A Diferença de Potencial", options: ["Positivo em relação ao exterior", "Negativo em relação ao exterior", "Neutro", "Positivo e negativo alternadamente"], correctAnswer: 1 },
                 { id: 3, difficulty: 'Fácil', question: "Qual íon tem maior concentração no Líquido Intracelular (LIC) durante o repouso?", topic: "Concentrações Iônicas", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Cálcio (Ca++)"], correctAnswer: 1 },
                 { id: 4, difficulty: 'Fácil', question: "A membrana em repouso é mais permeável a qual íon?", topic: "Permeabilidade e Canais de Vazamento", options: ["Sódio (Na+)", "Potássio (K+)", "Cloreto (Cl-)", "Proteínas"], correctAnswer: 1 },
-                { id: 5, difficulty: 'Fácil', question: "O que é uma despolarização?", topic: "O que são Potenciais Graduados?", options: ["A membrana fica mais negativa", "A membrana fica mais positiva", "A membrana volta ao repouso", "A membrana não sofre alteração"], correctAnswer: 1 },
+                { id: 5, difficulty: 'Fácil', question: "O que é uma despolarização?", topic: "O que são Potenciais Graduados?", options: ["A membrana fica mais negativa", "O potencial de membrana torna-se menos negativo", "A membrana volta ao repouso", "A membrana não sofre alteração"], correctAnswer: 1 },
                 { id: 6, difficulty: 'Fácil', question: "O princípio do 'tudo ou nada' se aplica a qual fenômeno?", topic: "Fases do Potencial de Ação", options: ["Potencial de Repouso", "Potencial Graduado", "Potencial de Ação", "Bomba de Sódio-Potássio"], correctAnswer: 2 },
                 { id: 7, difficulty: 'Fácil', question: "A fase de subida rápida do potencial de ação (despolarização) é causada pela entrada de qual íon?", topic: "Canais Dependentes de Voltagem", options: ["K+", "Cl-", "Na+", "Ca++"], correctAnswer: 2 },
                 { id: 8, difficulty: 'Fácil', question: "A fase de descida do potencial de ação (repolarização) é causada pela saída de qual íon?", topic: "Canais Dependentes de Voltagem", options: ["K+", "Na+", "Cl-", "Ânions"], correctAnswer: 0 },
@@ -1390,7 +1386,7 @@
                 { id: 27, difficulty: 'Média', question: "A inativação dos canais de Na+ é crucial para qual processo?", topic: "Período Refratário", options: ["Manter o potencial de repouso", "Iniciar a despolarização", "Garantir o período refratário absoluto e a propagação unidirecional do sinal", "A ação da bomba de Na+/K+"], correctAnswer: 2 },
                 { id: 28, difficulty: 'Média', question: "Se um neurotransmissor abre canais de Cl- (íon negativo), que tipo de potencial ele irá gerar?", topic: "PEPS vs. PIPS", options: ["Um PEPS", "Um PIPS", "Um potencial de ação diretamente", "Nenhum potencial"], correctAnswer: 1 },
                 { id: 29, difficulty: 'Média', question: "O que estabelece o 'ponto de equilíbrio' para o K+, que é de aproximadamente -90mV?", topic: "Permeabilidade e Canais de Vazamento", options: ["A bomba de Na+/K+", "A abertura dos canais de Na+", "O balanço entre a força do gradiente químico (que empurra K+ para fora) e a força elétrica (que puxa K+ para dentro)", "A presença de ânions orgânicos apenas"], correctAnswer: 2 },
-                { id: 30, difficulty: 'Média', question: "Qual o papel dos canais de vazamento de K+ no potencial de repouso?", topic: "Permeability and Leak Channels", options: ["Eles causam a despolarização", "Eles contribuem significativamente para tornar o interior da célula negativo", "Eles são ativamente fechados pela bomba de Na+/K+", "Eles só se abrem com um estímulo"], correctAnswer: 1 },
+                { id: 30, difficulty: 'Média', question: "Qual o papel dos canais de vazamento de K+ no potencial de repouso?", topic: "Permeabilidade e Canais de Vazamento", options: ["Eles causam a despolarização", "Eles contribuem significativamente para tornar o interior da célula negativo", "Eles são ativamente fechados pela bomba de Na+/K+", "Eles só se abrem com um estímulo"], correctAnswer: 1 },
                 { id: 31, difficulty: 'Média', question: "Se a bomba de Na+/K+ parasse de funcionar, o que aconteceria a longo prazo?", topic: "Bomba de Sódio-Potássio (Na⁺/K⁺ ATPase)", options: ["Os gradientes de Na+ e K+ se dissipariam, e a célula perderia a capacidade de gerar potenciais de ação", "A célula ficaria permanentemente despolarizada", "A célula ficaria permanentemente hiperpolarizada", "Nada mudaria imediatamente"], correctAnswer: 0 },
                 { id: 32, difficulty: 'Média', question: "O que determina se um potencial graduado é um PEPS ou um PIPS?", topic: "PEPS vs. PIPS", options: ["A força do estímulo", "O tipo de íon cujo canal é aberto pelo neurotransmissor", "A distância que ele percorre", "A presença de mielina"], correctAnswer: 1 },
                 { id: 33, difficulty: 'Média', question: "Por que o potencial de ação é ideal para comunicação a longa distância, ao contrário do potencial graduado?", topic: "Magnitude Variável e Decremento", options: ["Porque ele é mais lento", "Porque ele pode ter diferentes amplitudes", "Porque ele é regenerado e não perde força ao longo do axônio", "Porque ele é sempre inibitório"], correctAnswer: 2 },
@@ -1433,7 +1429,7 @@
             const resultsContainer = document.getElementById('quiz-results');
             const questionEl = document.getElementById('quiz-question');
             const optionsEl = document.getElementById('quiz-options');
-            const difficultyIndicator = document.getElementById('difficulty-indicator');
+            const questionCounterDisplay = document.getElementById('question-counter-display');
             const progressBarFill = document.getElementById('progress-bar-fill');
             const progressLabel = document.getElementById('progress-label');
             const timerDisplay = document.getElementById('timer-display');
@@ -1497,15 +1493,15 @@
 
                 let timeLeft = TIMER_DURATION;
                 timerDisplay.textContent = timeLeft;
-                timerDisplay.className = ''; // Reset classes
+                timerDisplay.className = 'absolute top-10 left-10 w-11 h-11 rounded-full bg-white/40 border-2 border-slate-600 flex items-center justify-center text-base font-bold text-slate-800 transition-all duration-300 ease-in-out'; // Reset classes
                 
                 countdownInterval = setInterval(() => {
                     timeLeft--;
                     timerDisplay.textContent = timeLeft;
                     if (timeLeft <= 10 && timeLeft > 5) {
-                        timerDisplay.className = 'warning';
+                        timerDisplay.classList.add('warning');
                     } else if (timeLeft <= 5) {
-                        timerDisplay.className = 'danger';
+                        timerDisplay.classList.add('danger');
                     }
                 }, 1000);
 
@@ -1527,11 +1523,16 @@
                 }
                 const questionData = activeQuiz[currentQuestionIndex];
 
-                // Update difficulty indicator
-                difficultyIndicator.textContent = ''; // Clear any text from old implementation
-                // Remove old difficulty classes before adding the new one
-                difficultyIndicator.classList.remove('facil', 'media', 'dificil');
-                difficultyIndicator.classList.add(questionData.difficulty.toLowerCase());
+                // Update question counter display and color
+                questionCounterDisplay.textContent = `${currentQuestionIndex + 1}/${activeQuiz.length}`;
+                questionCounterDisplay.classList.remove('facil-bg', 'media-bg', 'dificil-bg');
+                if (questionData.difficulty === 'Fácil') {
+                    questionCounterDisplay.classList.add('facil-bg');
+                } else if (questionData.difficulty === 'Média') {
+                    questionCounterDisplay.classList.add('media-bg');
+                } else if (questionData.difficulty === 'Difícil') {
+                    questionCounterDisplay.classList.add('dificil-bg');
+                }
 
 
                 // Add SVG if it exists for the question
@@ -1549,7 +1550,7 @@
                     }
                 }
 
-                questionEl.textContent = `(${currentQuestionIndex + 1}/${activeQuiz.length}) ${questionData.question}`;
+                questionEl.textContent = questionData.question;
                 
                 questionData.options.forEach((option, index) => {
                     const li = document.createElement('li');
