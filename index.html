@@ -750,7 +750,6 @@
         <div class="dynamic-bg-glow" id="bg-potencial-acao"></div>
     </div>
 
-    <!-- Hero Section -->
     <section id="hero" class="section-container">
         <div class="section-header-card">
             <h1>Bioeletrogênese</h1>
@@ -758,7 +757,6 @@
         </div>
     </section>
     
-    <!-- Resting Potential Section -->
     <section id="potencial-repouso" class="section-container">
         <div class="section-header-card">
             <h2 class="section-title">O Potencial de Repouso</h2>
@@ -791,7 +789,6 @@
                         <div class="image-bubble" id="svg-concentracao-ions" data-img-svg="true" data-img-alt="Tabela de Concentração Iônica" data-img-description="Esta tabela mostra as concentrações aproximadas (em mM) dos íons Sódio (Na+), Cloreto (Cl-) e Potássio (K+) dentro (LIC) e fora (LEC) da célula. Note a alta concentração de Na+ fora e de K+ dentro, uma diferença fundamental para a bioeletrogênese.">
                             <svg viewBox="0 0 300 150" xmlns="http://www.w3.org/2000/svg" class="text-sm font-sans">
                                 <title>Tabela de Concentração Iônica</title>
-                                <!-- Background and Structure -->
                                 <rect x="0" y="0" width="300" height="150" fill="#f8fafc" />
                                 <rect x="10" y="10" width="280" height="40" fill="#a5b4fc" rx="5"/>
                                 <rect x="10" y="50" width="280" height="90" fill="white" rx="5"/>
@@ -799,11 +796,9 @@
                                 <line x1="200" y1="10" x2="200" y2="140" stroke="#d1d5db" stroke-width="1.5" />
                                 <line x1="10" y1="90" x2="290" y2="90" stroke="#e5e7eb" stroke-width="1" />
                                 <line x1="10" y1="120" x2="290" y2="120" stroke="#e5e7eb" stroke-width="1" />
-                                <!-- Header Text -->
                                 <text x="57.5" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">Íon</text>
                                 <text x="152.5" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">LEC</text>
                                 <text x="245" y="35" text-anchor="middle" font-weight="bold" fill="#312e81">LIC</text>
-                                <!-- Body Text -->
                                 <g fill="#1e293b" font-size="16px" text-anchor="middle">
                                     <text x="57.5" y="75">Na+</text>
                                     <text x="152.5" y="75" font-weight="500">145</text>
@@ -849,7 +844,6 @@
         </div>
     </section>
 
-    <!-- Graded Potentials Section -->
     <section id="potenciais-graduados" class="section-container">
          <div class="section-header-card">
             <h2 class="section-title">Potenciais Graduados</h2>
@@ -892,15 +886,9 @@
                          <div class="image-bubble" id="svg-respostas-locais" data-img-svg="true" data-img-alt="Gráfico de Respostas Locais e Potencial de Ação" data-img-description="Este gráfico compara respostas sublimiares (que não atingem o limiar) com uma resposta que dispara um potencial de ação. A curva 'a' mostra uma hiperpolarização. As curvas 'b' e 'c' mostram despolarizações graduadas de força crescente. A curva 'd' atinge o 'Limiar' e desencadeia o potencial de ação 'tudo ou nada'.">
                             <svg viewBox="0 0 400 350" xmlns="http://www.w3.org/2000/svg" class="text-sm font-sans" fill="#475569">
                                 <title>Gráfico de Respostas Locais e Potencial de Ação</title>
-                                <!-- Background -->
                                 <rect width="400" height="350" fill="#eef2ff"/>
 
-                                <!-- Axes and grid lines -->
-                                <line x1="50" y1="300" x2="380" y2="300" stroke="#6b7280" stroke-width="2"/> <!-- Eixo X -->
-                                <line x1="50" y1="20" x2="50" y2="300" stroke="#6b7280" stroke-width="2"/> <!-- Eixo Y -->
-                                
-                                <!-- Y-Axis Labels -->
-                                <g font-size="14" text-anchor="end" font-weight="500">
+                                <line x1="50" y1="300" x2="380" y2="300" stroke="#6b7280" stroke-width="2"/> <line x1="50" y1="20" x2="50" y2="300" stroke="#6b7280" stroke-width="2"/> <g font-size="14" text-anchor="end" font-weight="500">
                                     <text x="45" y="263">PRM</text>
                                     <text x="45" y="278" font-size="12">-70</text>
                                     <line x1="50" y1="270" x2="60" y2="270" stroke="#6b7280" stroke-width="1.5"/>
@@ -915,32 +903,25 @@
                                 <text x="15" y="160" text-anchor="middle" writing-mode="vertical-rl" transform="rotate(180 15 160)" font-weight="600">$V_m$ (mV)</text>
                                 <text x="215" y="325" text-anchor="middle" font-weight="600">t (ms)</text>
                                 
-                                <!-- Threshold Line -->
                                 <line x1="50" y1="230" x2="190" y2="230" stroke="#0ea5e9" stroke-width="1.5" stroke-dasharray="5 3"/>
                                 <g>
                                     <rect x="195" y="220" width="55" height="22" rx="5" fill="rgba(255,255,255,0.7)"></rect>
                                     <text x="222" y="235" text-anchor="middle" font-weight="500">Limiar</text>
                                 </g>
                                 
-                                <!-- Curves -->
-                                <!-- Curve a (hyperpolarization) -->
                                 <path d="M 70 270 C 90 290, 150 290, 170 270" stroke="#a855f7" stroke-width="2.5" fill="none"/>
                                 <text x="120" y="292" fill="#a855f7" font-weight="bold">a</text>
                                 
-                                <!-- Curve b (small depolarization) -->
                                 <path d="M 70 270 C 100 250, 160 250, 190 270" stroke="#16a34a" stroke-width="2.5" fill="none"/>
                                 <text x="130" y="248" fill="#16a34a" font-weight="bold">b</text>
                                 
-                                <!-- Curve c (larger depolarization) -->
                                 <path d="M 70 270 C 110 230, 170 230, 205 270" stroke="#0ea5e9" stroke-width="2.5" fill="none"/>
                                 <text x="175" y="225" fill="#0ea5e9" font-weight="bold">c</text>
                                 
-                                <!-- Curve d (action potential) -->
                                 <path d="M 70 270 C 120 230, 150 230, 170 230" stroke="#dc2626" stroke-width="2.5" fill="none"/>
                                 <path d="M 170 230 L 180 190 L 190 85 L 195 40" stroke="#dc2626" stroke-width="2.5" fill="none"/>
                                 <text x="160" y="210" fill="#dc2626" font-weight="bold">d</text>
                                 
-                                <!-- Labels with translucent background -->
                                 <g>
                                     <rect x="270" y="265" width="115" height="45" rx="8" fill="rgba(255,255,255,0.7)"></rect>
                                     <text x="327" y="282" text-anchor="middle" font-weight="500">Respostas</text>
@@ -973,7 +954,6 @@
         </div>
     </section>
 
-    <!-- Action Potential Section -->
     <section id="potencial-acao" class="section-container">
         <div class="section-header-card">
             <h2 class="section-title">O Potencial de Ação</h2>
@@ -997,18 +977,15 @@
                          <div class="image-bubble" id="svg-potencial-acao" data-img-svg="true" data-img-alt="Gráfico das Fases do Potencial de Ação" data-img-description="Este gráfico detalha as fases de um potencial de ação. Começa no estado de repouso (1), atinge o limiar (2), despolariza rapidamente até um pico (3, 4), repolariza (5), passa por uma hiperpolarização (6) e finalmente retorna ao repouso (7). A entrada de Na+ causa a despolarização e a saída de K+ causa a repolarização.">
                             <svg viewBox="0 0 500 400" xmlns="http://www.w3.org/2000/svg" class="font-sans">
                                 <title>Gráfico Fiel do Potencial de Ação</title>
-                                <!-- Defs for arrowheads -->
                                 <defs>
                                     <marker id="arrow-head-purple" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
                                         <path d="M 0 0 L 10 5 L 0 10 z" fill="#8b5cf6"/>
                                     </marker>
                                 </defs>
                                 
-                                <!-- Axes -->
                                 <line x1="80" y1="350" x2="480" y2="350" stroke="#8b5cf6" stroke-width="3" marker-end="url(#arrow-head-purple)"/>
                                 <line x1="80" y1="350" x2="80" y2="20" stroke="#8b5cf6" stroke-width="3" marker-end="url(#arrow-head-purple)"/>
                                 
-                                <!-- Y-Axis Labels -->
                                 <g text-anchor="end" font-size="14px" font-weight="500" fill="#374151">
                                     <text x="75" y="68">+40</text>
                                     <text x="75" y="178">0</text>
@@ -1017,78 +994,56 @@
                                 </g>
                                 <text x="40" y="200" text-anchor="middle" writing-mode="vertical-rl" transform="rotate(180 40 200)" font-weight="600" fill="#374151">Voltagem (mv)</text>
                                 
-                                <!-- X-Axis Label -->
-                                 <text x="280" y="380" text-anchor="middle" font-weight="600" fill="#374151">Tempo (ms)</text>
+                                <text x="280" y="380" text-anchor="middle" font-weight="600" fill="#374151">Tempo (ms)</text>
                                 
-                                <!-- Reference Lines -->
                                 <line x1="80" y1="315" x2="450" y2="315" stroke="#facc15" stroke-width="2" stroke-dasharray="5 5"/>
                                 <line x1="120" y1="275" x2="210" y2="275" stroke="#4b5563" stroke-width="1.5"/>
                                 
-                                <!-- Curves -->
-                                <!-- Failed Initiations -->
                                 <path d="M 160 315 C 165 300, 175 300, 180 315" stroke="#facc15" stroke-width="3" fill="none"/>
                                 <path d="M 180 315 C 185 290, 205 290, 210 315" stroke="#facc15" stroke-width="3" fill="none"/>
                                 
-                                <!-- Main Action Potential Curve -->
                                 <path d="M 145 315 C 200 315, 210 275, 230 150 C 240 80, 250 50, 260 60 C 275 80, 290 250, 300 315 C 310 345, 320 355, 330 340 C 340 325, 350 315, 380 315" stroke="#facc15" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
                                 
-                                <!-- Labels with translucent backgrounds -->
                                 <g text-anchor="middle" font-weight="600">
-                                    <!-- Potencial de ação -->
                                     <rect x="200" y="20" width="160" height="28" rx="8" fill="rgba(255,255,255,0.7)"/>
                                     <text x="280" y="40" font-size="18px" fill="#1e293b">Potencial de ação</text>
                                     
-                                    <!-- Entrada de Na+ -->
                                     <rect x="115" y="75" width="110" height="25" rx="8" fill="rgba(240, 253, 244, 0.8)"/>
                                     <text x="170" y="92" fill="#15803d">Entrada de Na+</text>
                                     
-                                    <!-- Saída de K+ -->
                                     <rect x="330" y="165" width="95" height="25" rx="8" fill="rgba(240, 253, 244, 0.8)"/>
                                     <text x="377" y="182" fill="#15803d">Saída de K+</text>
                                     
-                                    <!-- Limite -->
                                     <rect x="155" y="250" width="55" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
                                     <text x="182" y="265" font-weight="500" fill="#374151">Limite</text>
                                     
-                                    <!-- Estado de repouso -->
                                     <rect x="340" y="290" width="130" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
                                     <text x="405" y="305" font-weight="500" fill="#374151">Estado de repouso</text>
                                     
-                                    <!-- Iniciações falhas -->
-                                     <rect x="200" y="285" width="120" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
+                                    <rect x="200" y="285" width="120" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
                                     <text x="260" y="300" font-weight="500" fill="#374151">Iniciações falhas</text>
                                     
-                                    <!-- Estímulo -->
                                     <rect x="95" y="320" width="70" height="22" rx="8" fill="rgba(255,255,255,0.7)"/>
                                     <text x="130" y="335" font-weight="500" fill="#374151">Estímulo ↑</text>
                                 </g>
                                 
-                                <!-- Rotated Labels -->
                                 <text x="180" y="200" text-anchor="middle" font-weight="600" fill="#374151">Despolarização</text>
                                 <text x="340" y="200" text-anchor="middle" font-weight="600" fill="#374151">Repolarização</text>
                                 
-                                <!-- Phase Markers -->
                                 <g font-family="sans-serif" font-size="12px" font-weight="bold" fill="white" text-anchor="middle">
-                                    <!-- Marker 1 -->
                                     <circle cx="130" cy="315" r="10" fill="#a855f7"/>
                                     <text x="130" y="319">1</text>
-                                    <!-- Marker 2 -->
                                     <circle cx="215" cy="275" r="10" fill="#a855f7"/>
                                     <text x="215" y="279">2</text>
-                                    <!-- Marker 3 -->
                                     <circle cx="238" cy="140" r="10" fill="#a855f7"/>
                                     <text x="238" y="144">3</text>
-                                    <!-- Marker 4 -->
                                     <circle cx="258" cy="60" r="10" fill="#a855f7"/>
                                     <text x="258" y="64">4</text>
-                                    <!-- Marker 5 -->
                                     <circle cx="280" cy="150" r="10" fill="#a855f7"/>
                                     <text x="280" y="154">5</text>
-                                    <!-- Marker 6 -->
                                     <circle cx="325" cy="345" r="10" fill="#a855f7"/>
                                     <text x="325" y="349">6</text>
-                                      <!-- Marker 7 -->
-                                    <circle cx="420" cy="315" r="10" fill="#a855f7"/>
+                                      <circle cx="420" cy="315" r="10" fill="#a855f7"/>
                                     <text x="420" y="319">7</text>
                                 </g>
                             </svg>
@@ -1137,7 +1092,6 @@
         </div>
     </section>
 
-    <!-- Quiz Section -->
     <section id="quiz-section" class="section-container">
         <div class="section-header-card">
             <h2 class="section-title">Teste seu Conhecimento</h2>
@@ -1146,7 +1100,6 @@
 
         <div id="quiz-area" class="w-full max-w-3xl flex flex-col items-center">
             
-            <!-- Progress Bar -->
             <div id="progress-bar-container">
                 <div id="progress-bar-fill" style="width: 0%;">0%</div>
             </div>
@@ -1167,18 +1120,16 @@
                 </div>
                 <h4 class="text-lg font-semibold mt-6 mb-2 text-slate-700">Tópicos para revisar:</h4>
                 <ul id="missed-topics-list"></ul>
-                 <button id="restart-quiz-btn">Novo Quiz</button>
+                 <button id="restart-quiz-btn">Recomeçar Quiz</button>
             </div>
             <button id="quiz-start-btn">Começar Quiz</button>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer class="footer-signature">
         <p>Feito por Rafael Chaves Sebe.</p>
     </footer>
 
-    <!-- Modal Structure -->
     <div id="modal-overlay" class="fixed inset-0">
         <div id="modal-content" class="relative">
              <button id="modal-close-btn" class="absolute top-4 right-4 z-20">&times;</button>
@@ -1186,8 +1137,7 @@
                 <h3 id="modal-title"></h3>
             </div>
             <div id="modal-image-container" class="hidden">
-                <!-- SVG will be injected here by JS -->
-            </div>
+                </div>
             <p id="modal-description"></p>
         </div>
     </div>
