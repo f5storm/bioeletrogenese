@@ -497,11 +497,10 @@
         #progress-label {
             text-align: center;
             margin-top: 0.75rem;
+            margin-bottom: 2rem;
             font-weight: 500;
             color: var(--text-secondary);
         }
-
-        /* == MODIFIED/NEW STYLES START == */
         
         /* New Question Counter Display */
         #question-counter-display {
@@ -519,15 +518,9 @@
             color: white;
             transition: all 0.3s ease;
         }
-        #question-counter-display.facil-bg {
-            background-color: #22c55e; /* green-500 */
-        }
-        #question-counter-display.media-bg {
-            background-color: #f59e0b; /* amber-500 */
-        }
-        #question-counter-display.dificil-bg {
-            background-color: #ef4444; /* red-500 */
-        }
+        #question-counter-display.facil-bg { background-color: #22c55e; }
+        #question-counter-display.media-bg { background-color: #f59e0b; }
+        #question-counter-display.dificil-bg { background-color: #ef4444; }
         
         /* Timer Display Styles */
         #timer-display {
@@ -564,8 +557,6 @@
             100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
         }
         
-        #modal-description { font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7; padding: 0 2rem 2rem 2rem; }
-        
         #quiz-question {
             font-size: 1.5rem;
             font-weight: 600;
@@ -575,8 +566,6 @@
             text-align: center;
         }
         
-        /* == MODIFIED/NEW STYLES END == */
-
         #quiz-options {
             list-style: none;
             padding: 0;
@@ -603,25 +592,21 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
         }
         
-        .quiz-option.disabled {
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        
+        .quiz-option.disabled { cursor: not-allowed; opacity: 0.7; }
         .quiz-option.correct-answer {
             border-color: #22c55e;
             background-color: #f0fdf4;
             color: #15803d;
             font-weight: 600;
         }
-        
         .quiz-option.incorrect-answer {
             border-color: #ef4444;
             background-color: #fef2f2;
             color: #b91c1c;
             font-weight: 600;
         }
-
+        
+        /* === NEW AND MODIFIED BUTTON STYLES === */
         #quiz-start-btn, #restart-quiz-btn {
             background: rgba(255, 255, 255, 0.4);
             backdrop-filter: blur(10px);
@@ -636,12 +621,27 @@
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
         
-        #quiz-start-btn {
-            color: var(--text-primary);
+        #quiz-start-btn { color: var(--text-primary); }
+        #quiz-start-btn:disabled { 
+            cursor: not-allowed; 
+            background: rgba(226, 232, 240, 0.5);
+            color: #94a3b8;
         }
+
         #restart-quiz-btn {
             color: var(--acao-color);
-             margin-top: 2rem;
+            margin-top: 2rem;
+        }
+        
+        #reset-progress-btn {
+            color: #475569; /* slate-600 */
+            background: none;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
         }
 
         #quiz-start-btn:hover, #restart-quiz-btn:hover {
@@ -649,10 +649,14 @@
             background: rgba(255, 255, 255, 0.6);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
-        
-        #quiz-results {
-             text-align: center;
+
+        #reset-progress-btn:hover {
+             color: var(--text-primary);
+             text-decoration: underline;
         }
+        /* === END NEW STYLES === */
+        
+        #quiz-results { text-align: center; }
         
         #quiz-results h3 {
              font-size: 2rem;
@@ -696,13 +700,8 @@
             transition: all 0.2s ease-in-out;
         }
 
-        .stat-correct {
-            background-color: rgba(34, 197, 94, 0.25); 
-        }
-
-        .stat-incorrect {
-            background-color: rgba(239, 68, 68, 0.25);
-        }
+        .stat-correct { background-color: rgba(34, 197, 94, 0.25); }
+        .stat-incorrect { background-color: rgba(239, 68, 68, 0.25); }
         
         #missed-topics-list {
             display: flex;
@@ -1111,6 +1110,7 @@
                 <h3 id="quiz-question"></h3>
                 <ul id="quiz-options"></ul>
             </div>
+
             <div id="quiz-results" class="quiz-container hidden">
                 <h3>Quiz Finalizado!</h3>
                 <div id="quiz-percentage">100%</div>
@@ -1120,9 +1120,14 @@
                 </div>
                 <h4 class="text-lg font-semibold mt-6 mb-2 text-slate-700">Tópicos para revisar:</h4>
                 <ul id="missed-topics-list"></ul>
-                 <button id="restart-quiz-btn">Recomeçar Quiz</button>
+                 <button id="restart-quiz-btn">Novo Quiz</button>
             </div>
-            <button id="quiz-start-btn">Começar Quiz</button>
+
+            <div id="start-area" class="flex flex-col items-center">
+                 <button id="quiz-start-btn">Começar Quiz</button>
+                 <button id="reset-progress-btn">Zerar Progresso</button>
+            </div>
+
         </div>
     </section>
 
@@ -1299,7 +1304,7 @@
             }
             
             // ===================================
-            // == QUIZ LOGIC V3 (with Timer)
+            // == QUIZ LOGIC V4
             // ===================================
 
             const questionBank = [
@@ -1375,6 +1380,8 @@
 
             const startBtn = document.getElementById('quiz-start-btn');
             const restartBtn = document.getElementById('restart-quiz-btn');
+            const resetBtn = document.getElementById('reset-progress-btn'); 
+            const startArea = document.getElementById('start-area'); // New start area container
             const quizContainer = document.getElementById('quiz-container');
             const resultsContainer = document.getElementById('quiz-results');
             const questionEl = document.getElementById('quiz-question');
@@ -1392,12 +1399,13 @@
 
             let questionTimer;
             let countdownInterval;
-            const TIMER_DURATION = 30; // seconds
+            const TIMER_DURATION = 30; 
 
             function loadProgress() {
                 const savedProgress = localStorage.getItem('bioquiz_correctlyAnsweredIds');
                 correctlyAnsweredIds = savedProgress ? JSON.parse(savedProgress) : [];
                 updateProgressBar();
+                checkCompletion(); // Check if all questions are answered on load
             }
 
             function saveProgress() {
@@ -1413,25 +1421,33 @@
                 progressBarFill.textContent = `${percentage}%`;
                 progressLabel.textContent = `Progresso: ${answeredCount} de ${totalQuestions} questões dominadas`;
             }
+
+            function checkCompletion() {
+                const availableQuestions = questionBank.filter(q => !correctlyAnsweredIds.includes(q.id));
+                if (availableQuestions.length === 0) {
+                    startBtn.disabled = true;
+                    startBtn.textContent = "Parabéns, você dominou tudo!";
+                } else {
+                    startBtn.disabled = false;
+                    startBtn.textContent = "Começar Quiz";
+                }
+            }
             
             function startQuiz() {
-                // Filtra as perguntas que o usuário ainda não acertou
                 const availableQuestions = questionBank.filter(q => !correctlyAnsweredIds.includes(q.id));
                 
-                // Se não houver mais perguntas, mostra uma mensagem
                 if (availableQuestions.length === 0) {
-                     questionEl.textContent = "Parabéns! Você dominou todas as questões. Zere o progresso para começar de novo.";
-                     // Opcional: Adicionar um botão para zerar o progresso.
+                     checkCompletion();
                      return;
                 }
 
-                // Seleciona 20 perguntas aleatórias do pool disponível
                 activeQuiz = [...availableQuestions].sort(() => 0.5 - Math.random()).slice(0, 20);
                 
                 currentQuestionIndex = 0;
                 score = 0;
                 missedTopics = [];
-                startBtn.classList.add('hidden');
+                
+                startArea.classList.add('hidden');
                 resultsContainer.classList.add('hidden');
                 quizContainer.classList.remove('hidden');
                 showQuestion();
@@ -1443,7 +1459,7 @@
 
                 let timeLeft = TIMER_DURATION;
                 timerDisplay.textContent = timeLeft;
-                timerDisplay.className = 'absolute top-10 left-10 w-11 h-11 rounded-full bg-white/40 border-2 border-slate-600 flex items-center justify-center text-base font-bold text-slate-800 transition-all duration-300 ease-in-out'; // Reset classes
+                timerDisplay.className = 'absolute top-10 left-10 w-11 h-11 rounded-full bg-white/40 border-2 border-slate-600 flex items-center justify-center text-base font-bold text-slate-800 transition-all duration-300 ease-in-out';
                 
                 countdownInterval = setInterval(() => {
                     timeLeft--;
@@ -1462,7 +1478,7 @@
             }
 
             function handleTimeUp() {
-                 selectAnswer(null); // Pass null to indicate time's up
+                 selectAnswer(null);
             }
 
             function showQuestion() {
@@ -1473,7 +1489,6 @@
                 }
                 const questionData = activeQuiz[currentQuestionIndex];
 
-                // Update question counter display and color
                 questionCounterDisplay.textContent = `${currentQuestionIndex + 1}/${activeQuiz.length}`;
                 questionCounterDisplay.classList.remove('facil-bg', 'media-bg', 'dificil-bg');
                 if (questionData.difficulty === 'Fácil') {
@@ -1484,8 +1499,6 @@
                     questionCounterDisplay.classList.add('dificil-bg');
                 }
 
-
-                // Add SVG if it exists for the question
                 if (questionData.isGraphic && questionData.svgId) {
                     const svgContainer = document.getElementById(questionData.svgId);
                     if (svgContainer) {
@@ -1531,7 +1544,6 @@
                 clearInterval(countdownInterval);
 
                 const selectedOption = e ? e.target : null;
-                // Disable all options after one is clicked
                 Array.from(optionsEl.children).forEach(option => option.removeEventListener('click', selectAnswer));
 
                 const currentQuestion = activeQuiz[currentQuestionIndex];
@@ -1553,7 +1565,6 @@
                     score++;
                     if(selectedOption) selectedOption.classList.add('correct-answer');
                     document.body.classList.add('correct-bg');
-                    // Add question ID to correctly answered list and save
                     if (!correctlyAnsweredIds.includes(currentQuestion.id)) {
                         correctlyAnsweredIds.push(currentQuestion.id);
                         saveProgress();
@@ -1590,18 +1601,15 @@
                 const missedListEl = document.getElementById('missed-topics-list');
                 missedListEl.innerHTML = '';
                 
-                if (missedTopics.some(t => t)) { // Check if there are any defined topics
-                     const uniqueMissedTopics = [...new Set(missedTopics.filter(t => t))]; // Filter out undefined
-                     
+                if (missedTopics.some(t => t)) {
+                     const uniqueMissedTopics = [...new Set(missedTopics.filter(t => t))];
                      uniqueMissedTopics.forEach(topicName => {
                          const targetCard = Array.from(document.querySelectorAll('.topic-card .summary'))
                              .find(s => s.textContent.trim() === topicName)?.parentElement;
-
                          if (targetCard) {
                              const bubble = document.createElement('li');
                              bubble.textContent = topicName;
                              bubble.classList.add('missed-topic-bubble');
-
                              bubble.addEventListener('click', (e) => {
                                  e.currentTarget.classList.add('visited-topic');
                                  targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1622,12 +1630,27 @@
                      }
                      missedListEl.appendChild(congrats);
                 }
+                 checkCompletion();
+            }
+            
+            function resetProgress() {
+                if (confirm("Você tem certeza que deseja zerar todo o seu progresso? Esta ação não pode ser desfeita.")) {
+                    localStorage.removeItem('bioquiz_correctlyAnsweredIds');
+                    correctlyAnsweredIds = [];
+                    updateProgressBar();
+                    checkCompletion(); // Re-enable start button
+                    alert("Seu progresso foi zerado com sucesso!");
+                }
             }
 
             startBtn.addEventListener('click', startQuiz);
-            restartBtn.addEventListener('click', startQuiz);
+            restartBtn.addEventListener('click', () => {
+                resultsContainer.classList.add('hidden');
+                startArea.classList.remove('hidden');
+                checkCompletion();
+            });
+            resetBtn.addEventListener('click', resetProgress);
 
-            // Initial load of progress
             loadProgress();
         });
     </script>
